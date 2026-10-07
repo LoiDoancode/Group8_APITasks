@@ -1,0 +1,12 @@
+# Môi trường ảo Python
+.venv/
+venv/
+ENV/
+
+# Các file rác do Python tạo ra khi chạy
+__pycache__/
+*.py[cod]
+
+# File cấu hình riêng của các IDE / Code Editor
+.vscode/
+.idea/
