@@ -2,11 +2,27 @@
 .venv/
 venv/
 ENV/
-
-# Các file rác do Python tạo ra khi chạy
-__pycache__/
-*.py[cod]
+env/
 
 # File cấu hình riêng của các IDE / Code Editor
 .vscode/
 .idea/
+
+# Byte-compiled / cache của Python (Rất quan trọng)
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# File chứa biến môi trường (Bảo mật)
+.env
+.env.*
+
+# Các file log và database cục bộ (nếu dùng SQLite)
+*.log
+db.sqlite3
+db.sqlite3-journal
+
+# File hệ điều hành (macOS / Windows)
+.DS_Store
+Thumbs.db
