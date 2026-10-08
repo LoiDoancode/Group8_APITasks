@@ -1,0 +1,257 @@
+# ==========================================
+# 1. CORE & COMMON SCHEMAS (TV1 thiết kế)
+# ==========================================
+ErrorDetail:
+  type: object
+  properties:
+    field:
+      type: string
+      description: Tên trường bị lỗi
+      example: "published_year"
+    issue:
+      type: string
+      description: Chi tiết lỗi phát sinh
+      example: "Năm xuất bản không được lớn hơn năm hiện tại"
+
+ErrorResponse:
+  type: object
+  required:
+    - code
+    - message
+    - timestamp
+  properties:
+    code:
+      type: integer
+      description: Mã trạng thái HTTP hoặc Mã lỗi nội bộ
+      example: 400
+    message:
+      type: string
+      description: Thông điệp giải thích lỗi
+      example: "Dữ liệu yêu cầu không hợp lệ"
+    timestamp:
+      type: string
+      format: date-time
+      description: Thời điểm phát sinh lỗi
+      example: "2026-10-08T19:40:00Z"
+    details:
+      type: array
+      items:
+        $ref: "#/ErrorDetail"
+
+PaginationMeta:
+  type: object
+  required:
+    - page
+    - limit
+    - total_items
+    - total_pages
+  properties:
+    page:
+      type: integer
+      minimum: 1
+      example: 1
+    limit:
+      type: integer
+      minimum: 1
+      maximum: 100
+      example: 10
+    total_items:
+      type: integer
+      minimum: 0
+      example: 150
+    total_pages:
+      type: integer
+      minimum: 0
+      example: 15
+
+# ==========================================
+# 2. ENTITY SCHEMAS BASE (Khung nền cho TV2, TV3, TV4)
+# ==========================================
+
+# Base Book Schema (TV2 tiếp tục hoàn thiện các tham số nâng cao)
+Book:
+  type: object
+  required:
+    - id
+    - title
+    - author_id
+    - category
+    - quantity
+  properties:
+    id:
+      type: string
+      format: uuid
+      example: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+    title:
+      type: string
+      maxLength: 255
+      example: "Thiết Kế Kiến Trúc Microservices"
+    isbn:
+      type: string
+      example: "978-3-16-148410-0"
+    author_id:
+      type: string
+      format: uuid
+      example: "b1f8bc88-8d0a-3ef7-aa5c-5aa8bd270f22"
+    category:
+      type: string
+      example: "Công nghệ thông tin"
+    published_year:
+      type: integer
+      example: 2025
+    quantity:
+      type: integer
+      minimum: 0
+      example: 20
+    available_quantity:
+      type: integer
+      minimum: 0
+      example: 15
+    created_at:
+      type: string
+      format: date-time
+      example: "2026-01-15T08:30:00Z"
+
+# Base Author Schema (TV3 tiếp tục hoàn thiện)
+Author:
+  type: object
+  required:
+    - id
+    - name
+  properties:
+    id:
+      type: string
+      format: uuid
+      example: "b1f8bc88-8d0a-3ef7-aa5c-5aa8bd270f22"
+    name:
+      type: string
+      maxLength: 100
+      example: "Nguyen Van A"
+    email:
+      type: string
+      format: email
+      example: "nguyenvana@example.com"
+    bio:
+      type: string
+      example: "Chuyên gia với 10 năm kinh nghiệm thiết kế hệ thống phân tán."
+    created_at:
+      type: string
+      format: date-time
+      example: "2025-11-20T10:00:00Z"
+
+# Base Borrow Schema (TV4 tiếp tục hoàn thiện)
+BorrowRecord:
+  type: object
+  required:
+    - id
+    - book_id
+    - user_id
+    - borrow_date
+    - due_date
+    - status
+  properties:
+    id:
+      type: string
+      format: uuid
+      example: "c2a7bc77-7e0a-2ef6-994b-4bb7bd160e33"
+    book_id:
+      type: string
+      format: uuid
+      example: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+    user_id:
+      type: string
+      format: uuid
+      example: "d3b6bc66-6f0a-1ef5-883a-3aa6bd050d44"
+    borrow_date:
+      type: string
+      format: date
+      example: "2026-10-01"
+    due_date:
+      type: string
+      format: date
+      example: "2026-10-15"
+    return_date:
+      type: string
+      format: date
+      nullable: true
+      example: null
+    status:
+      type: string
+      enum: [pending, borrowed, returned, overdue]
+      example: "borrowed"
+# ==========================================
+# 3. AUTH SCHEMAS (Xác thực người dùng)
+# ==========================================
+LoginRequest:
+  type: object
+  required:
+    - username
+    - password
+  properties:
+    username:
+      type: string
+      example: "admin"
+    password:
+      type: string
+      format: password
+      example: "password123"
+
+LoginResponse:
+  type: object
+  properties:
+    access_token:
+      type: string
+      description: Chuỗi JWT token để xác thực các request sau
+      example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM..."
+    token_type:
+      type: string
+      example: "Bearer"
+    expires_in:
+      type: integer
+      description: Thời gian sống của token (tính bằng giây)
+      example: 3600
+
+RegisterRequest:
+  type: object
+  required:
+    - username
+    - password
+    - email
+    - full_name
+  properties:
+    username:
+      type: string
+      example: "nguyenvana"
+    password:
+      type: string
+      format: password
+      example: "matkhau123"
+    email:
+      type: string
+      format: email
+      example: "nva@example.com"
+    full_name:
+      type: string
+      example: "Nguyễn Văn A"
+
+User:
+  type: object
+  properties:
+    id:
+      type: string
+      format: uuid
+      example: "e6f4a8b2-1b1c-4b1a-9f5b-1c5b8b9b8b9b"
+    username:
+      type: string
+      example: "nguyenvana"
+    email:
+      type: string
+      format: email
+      example: "nva@example.com"
+    full_name:
+      type: string
+      example: "Nguyễn Văn A"
+    role:
+      type: string
+      enum: [admin, user, librarian]
+      example: "user"

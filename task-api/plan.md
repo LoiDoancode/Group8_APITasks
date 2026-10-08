@@ -106,7 +106,7 @@ Mỗi thành viên làm việc trên branch cá nhân (`feature/name-task`) và 
 | 2 | Thành viên 5 | Tạo Common Schemas (Error, Pagination) |
 | 3 | Thành viên 2, 3, 4 | Viết các Endpoints & Schemas được phân công |
 | 4 | Cả 5 người | Tạo PR, Review chéo code của nhau |
-| 5 | Thành viên 5 & 1 | Validate file tổng, Merge vào `main`, hoàn thiện README |e của nhau | Ngày 5 |
+Thành viên 5   5 & 1 | Validate file tổng, Merge vào `main`, hoàn thiện README |e của nhau | Ngày 5 |
 | 5 | Thành viên 5 & 1 | Validate file tổng, Merge vào `main`, hoàn thiện README | Ngày 6 |
 
 ---
