@@ -1,0 +1,72 @@
+login:
+  post:
+    tags:
+      - Auth
+    summary: Đăng nhập để nhận JWT Token
+    description: Gửi thông tin tài khoản (username/password) để nhận về Access Token.
+    security: [] # Endpoint này không yêu cầu token (ai cũng gọi được)
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas.yaml#/LoginRequest'
+      description: Thông tin đăng nhập
+    responses:
+      '200':
+        description: Đăng nhập thành công, trả về JWT Token
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas.yaml#/LoginResponse'
+      '400':
+        $ref: '../components/responses.yaml#/BadRequest'
+      '401':
+        description: Sai tên đăng nhập hoặc mật khẩu
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas.yaml#/ErrorResponse'
+            example:
+              code: 401
+              message: "Sai tên đăng nhập hoặc mật khẩu"
+              timestamp: "2026-10-08T20:00:00Z"
+
+register:
+  post:
+    tags:
+      - Auth
+    summary: Đăng ký tài khoản mới
+    description: Đăng ký tài khoản người dùng.
+    security: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas.yaml#/RegisterRequest'
+    responses:
+      '201':
+        description: Đăng ký thành công
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas.yaml#/User'
+      '400':
+        $ref: '../components/responses.yaml#/BadRequest'
+
+me:
+  get:
+    tags:
+      - Auth
+    summary: Lấy thông tin cá nhân
+    description: Lấy thông tin của người dùng hiện tại (cần token).
+    responses:
+      '200':
+        description: Thông tin tài khoản của bạn
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas.yaml#/User'
+      '401':
+        $ref: '../components/responses.yaml#/Unauthorized'

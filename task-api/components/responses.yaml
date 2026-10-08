@@ -1,0 +1,57 @@
+BadRequest:
+  description: Yêu cầu không hợp lệ do sai cú pháp hoặc thiếu thông tin bắt buộc.
+  content:
+    application/json:
+      schema:
+        $ref: "./schemas.yaml#/ErrorResponse"
+      example:
+        code: 400
+        message: "Dữ liệu yêu cầu không hợp lệ"
+        timestamp: "2026-10-08T19:40:00Z"
+        details:
+          - field: "title"
+            issue: "Trường title không được để trống"
+
+Unauthorized:
+  description: Chưa xác thực danh tính hoặc Token đã hết hạn.
+  content:
+    application/json:
+      schema:
+        $ref: "./schemas.yaml#/ErrorResponse"
+      example:
+        code: 401
+        message: "Access token không hợp lệ hoặc đã hết hạn"
+        timestamp: "2026-10-08T19:40:00Z"
+
+Forbidden:
+  description: Không có quyền truy cập vào tài nguyên này.
+  content:
+    application/json:
+      schema:
+        $ref: "./schemas.yaml#/ErrorResponse"
+      example:
+        code: 403
+        message: "Bạn không có quyền thực hiện thao tác này"
+        timestamp: "2026-10-08T19:40:00Z"
+
+NotFound:
+  description: Tài nguyên yêu cầu không tồn tại trên hệ thống.
+  content:
+    application/json:
+      schema:
+        $ref: "./schemas.yaml#/ErrorResponse"
+      example:
+        code: 404
+        message: "Không tìm thấy dữ liệu yêu cầu"
+        timestamp: "2026-10-08T19:40:00Z"
+
+InternalServerError:
+  description: Lỗi máy chủ nội bộ.
+  content:
+    application/json:
+      schema:
+        $ref: "./schemas.yaml#/ErrorResponse"
+      example:
+        code: 500
+        message: "Lỗi hệ thống nội bộ, vui lòng thử lại sau"
+        timestamp: "2026-10-08T19:40:00Z"

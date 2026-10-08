@@ -1,0 +1,71 @@
+openapi: 3.0.3
+info:
+  title: Book Management RESTful API
+  description: >
+    Hệ thống API quản lý thư viện sách tập trung. 
+    Hỗ trợ các chức năng quản lý danh mục sách, thông tin tác giả và quy trình mượn/trả sách.
+  version: 1.0.0
+  termsOfService: https://example.com/terms/
+  contact:
+    name: Doãn Duy Lợi (Team Lead)
+    email: leader@uet.vnu.edu.vn
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8080/v1
+    description: Local Development Environment
+  - url: https://api.library-demo.com/v1
+    description: Staging Environment
+
+tags:
+  - name: Books
+    description: Quản lý thông tin, tìm kiếm và cập nhật dữ liệu sách
+  - name: Authors
+    description: Quản lý hồ sơ, tiểu sử và tác phẩm của tác giả
+  - name: Borrow
+    description: Quy trình lập phiếu mượn, gia hạn và trả sách
+  - name: Auth
+    description: Xác thực người dùng và cấp phát JWT Token
+
+paths:
+  # Endpoints xác thực
+  /auth/login:
+    $ref: './paths/auth.yaml#/login'
+  /auth/register:
+    $ref: './paths/auth.yaml#/register'
+  /auth/me:
+    $ref: './paths/auth.yaml#/me'
+  # Endpoints do TV2 phụ trách
+  /books:
+    $ref: './paths/books.yaml#/books'
+  /books/{id}:
+    $ref: './paths/books.yaml#/book_by_id'
+
+  # Endpoints do TV3 phụ trách
+  /authors:
+    $ref: './paths/authors.yaml#/authors'
+  /authors/{id}:
+    $ref: './paths/authors.yaml#/author_by_id'
+
+  # Endpoints do TV4 phụ trách
+  /borrow:
+    $ref: './paths/borrow.yaml#/borrow'
+  /borrow/{id}:
+    $ref: './paths/borrow.yaml#/borrow_by_id'
+
+components:
+  schemas:
+    $ref: './components/schemas.yaml'
+  responses:
+    $ref: './components/responses.yaml'
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: "Nhập token xác thực định dạng JWT (Ví dụ: Bearer <token>)"
+
+security:
+  - BearerAuth: []
