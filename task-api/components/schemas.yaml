@@ -119,7 +119,7 @@ Book:
       format: date-time
       example: "2026-01-15T08:30:00Z"
 
-# Base Author Schema (TV3 tiếp tục hoàn thiện)
+# Base Author Schema
 Author:
   type: object
   required:
@@ -145,6 +145,42 @@ Author:
       type: string
       format: date-time
       example: "2025-11-20T10:00:00Z"
+
+# Schema nhận đầu vào là request của client khi POST
+AuthorRequest:
+  type: object 
+  required: 
+    - name
+  properties:
+    name: 
+      type: string
+      maxLength: 100
+      example: "Nguyen Van A" 
+    email:
+      type: string 
+      format: email
+      example: "nguyenvana@gmail.com"
+    bio:
+      type: string
+      example: "Chuyên gia với 10 năm kinh nghiệm hệ thống phân tán"
+
+# Schema dùng làm response body cho GET/POST
+AuthorResponse:
+  allOf:
+    - $ref: '#/AuthorRequest'
+    - type: object
+      required:
+        - id
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "b1f8bc88-8d0a-3ef7-aa5c-5aa8bd270f22"
+        created_at:
+          type: string
+          format: date-time
+          example: "2025-11-20T10:00:00Z"
 
 # Base Borrow Schema (TV4 tiếp tục hoàn thiện)
 BorrowRecord:
