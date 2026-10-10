@@ -1,0 +1,109 @@
+# 1. Khối ứng với key #/authors trong file openapi.yaml
+authors:
+  get:
+    tags:
+      - Authors
+    summary: Lấy danh sách tác giả
+    description: Lấy danh sách tất cả tác giả trong thư viện, hỗ trợ phân trang.
+    parameters:
+      - name: page
+        in: query
+        description: Số thứ tự trang
+        schema:
+          type: integer
+          default: 1
+      - name: limit
+        in: query
+        description: Số bản ghi trên mỗi trang
+        schema:
+          type: integer
+          default: 10
+    responses:
+      '200':
+        description: Danh sách tác giả
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../components/schemas.yaml#/AuthorResponse'
+      '500':
+        $ref: '../components/responses.yaml#/InternalServerError'
+
+  post:
+    tags:
+      - Authors
+    summary: Thêm tác giả mới
+    description: Tạo hồ sơ cho một tác giả mới. (Đã yêu cầu BearerAuth từ file gốc).
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas.yaml#/AuthorRequest'
+    responses:
+      '201':
+        description: Tạo tác giả thành công
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas.yaml#/AuthorResponse'
+      '400':
+        $ref: '../components/responses.yaml#/BadRequest'
+
+# 2. Khối ứng với key #/author_by_id trong file openapi.yaml
+author_by_id:
+  parameters:
+    - name: id
+      in: path
+      required: true
+      description: ID của tác giả
+      schema:
+        type: string
+        format: uuid
+
+  get:
+    tags:
+      - Authors
+    summary: Xem chi tiết tác giả
+    responses:
+      '200':
+        description: Lấy thông tin thành công
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas.yaml#/AuthorResponse'
+      '404':
+        $ref: '../components/responses.yaml#/NotFound'
+
+  put:
+    tags:
+      - Authors
+    summary: Cập nhật thông tin tác giả
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas.yaml#/AuthorRequest'
+    responses:
+      '200':
+        description: Cập nhật thành công
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas.yaml#/AuthorResponse'
+      '400':
+        $ref: '../components/responses.yaml#/BadRequest'
+      '404':
+        $ref: '../components/responses.yaml#/NotFound'
+
+  delete:
+    tags:
+      - Authors
+    summary: Xóa tác giả
+    responses:
+      '204':
+        description: Xóa thành công (Không trả về dữ liệu)
+      '404':
+        $ref: '../components/responses.yaml#/NotFound'
