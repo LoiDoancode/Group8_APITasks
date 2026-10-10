@@ -1,36 +1,26 @@
-# 1. Các thao tác trên danh sách / tập hợp tài nguyên (/authors)
-/authors:
+# 1. Khối ứng với key #/authors trong file openapi.yaml
+authors:
   get:
     tags:
       - Authors
     summary: Lấy danh sách tác giả
-    description: Trả về danh sách tác giả có hỗ trợ phân trang (pagination) và tìm kiếm theo tên.
+    description: Lấy danh sách tất cả tác giả trong thư viện, hỗ trợ phân trang.
     parameters:
       - name: page
         in: query
-        description: Số thứ tự trang hiện tại
-        required: false
+        description: Số thứ tự trang
         schema:
           type: integer
           default: 1
-          minimum: 1
       - name: limit
         in: query
-        description: Số lượng bản ghi mỗi trang
-        required: false
+        description: Số bản ghi trên mỗi trang
         schema:
           type: integer
           default: 10
-          maximum: 100
-      - name: search
-        in: query
-        description: Tìm kiếm tác giả theo tên
-        required: false
-        schema:
-          type: string
     responses:
       '200':
-        description: Lấy danh sách thành công
+        description: Danh sách tác giả
         content:
           application/json:
             schema:
@@ -38,18 +28,15 @@
               items:
                 $ref: '../components/schemas.yaml#/AuthorResponse'
       '500':
-        description: Lỗi máy chủ nội bộ
+        $ref: '../components/responses.yaml#/InternalServerError'
 
   post:
     tags:
       - Authors
-    summary: Tạo tác giả mới
-    description: Thêm một tác giả mới vào hệ thống. Yêu cầu quyền quản trị viên.
-    security:
-      - BearerAuth: []
+    summary: Thêm tác giả mới
+    description: Tạo hồ sơ cho một tác giả mới. (Đã yêu cầu BearerAuth từ file gốc).
     requestBody:
       required: true
-      description: Thông tin tác giả cần tạo
       content:
         application/json:
           schema:
@@ -62,45 +49,39 @@
             schema:
               $ref: '../components/schemas.yaml#/AuthorResponse'
       '400':
-        description: Dữ liệu gửi lên không hợp lệ (Bad Request)
-      '401':
-        description: Chưa xác thực (Unauthorized)
+        $ref: '../components/responses.yaml#/BadRequest'
 
-# 2. Các thao tác trên từng tài nguyên cụ thể (/authors/{id})
-/authors/{id}:
+# 2. Khối ứng với key #/author_by_id trong file openapi.yaml
+author_by_id:
   parameters:
     - name: id
       in: path
       required: true
-      description: UUID của tác giả
+      description: ID của tác giả
       schema:
         type: string
         format: uuid
-        example: "b1f8bc88-8d0a-3ef7-aa5c-5aa8bd270f22"
 
   get:
     tags:
       - Authors
-    summary: Lấy thông tin chi tiết một tác giả
+    summary: Xem chi tiết tác giả
     responses:
       '200':
-        description: Tìm thấy tác giả
+        description: Lấy thông tin thành công
         content:
           application/json:
             schema:
               $ref: '../components/schemas.yaml#/AuthorResponse'
       '404':
-        description: Không tìm thấy tác giả với ID tương ứng
+        $ref: '../components/responses.yaml#/NotFound'
 
   put:
     tags:
       - Authors
     summary: Cập nhật thông tin tác giả
-    security:
-      - BearerAuth: []
     requestBody:
       required: true
-      description: Thông tin cập nhật của tác giả
       content:
         application/json:
           schema:
@@ -113,18 +94,16 @@
             schema:
               $ref: '../components/schemas.yaml#/AuthorResponse'
       '400':
-        description: Dữ liệu không hợp lệ
+        $ref: '../components/responses.yaml#/BadRequest'
       '404':
-        description: Không tìm thấy tác giả
+        $ref: '../components/responses.yaml#/NotFound'
 
   delete:
     tags:
       - Authors
     summary: Xóa tác giả
-    security:
-      - BearerAuth: []
     responses:
       '204':
-        description: Xóa thành công, không có nội dung trả về
+        description: Xóa thành công (Không trả về dữ liệu)
       '404':
-        description: Không tìm thấy tác giả
+        $ref: '../components/responses.yaml#/NotFound'
