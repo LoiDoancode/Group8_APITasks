@@ -1,6 +1,3 @@
-# ==========================================
-# 1. CORE & COMMON SCHEMAS (TV1 thiết kế)
-# ==========================================
 ErrorDetail:
   type: object
   properties:
@@ -179,9 +176,7 @@ BorrowRecord:
       type: string
       enum: [pending, borrowed, returned, overdue]
       example: "borrowed"
-# ==========================================
-# 3. AUTH SCHEMAS (Xác thực người dùng)
-# ==========================================
+#Xác thực người dùng
 LoginRequest:
   type: object
   required:
