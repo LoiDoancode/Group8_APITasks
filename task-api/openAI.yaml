@@ -7,8 +7,8 @@ info:
   version: 1.0.0
   termsOfService: https://example.com/terms/
   contact:
-    name: Doãn Duy Lợi (Team Lead)
-    email: leader@uet.vnu.edu.vn
+    name: Doãn Duy Lợi
+    email: 24021549@vnu.edu.vn
   license:
     name: MIT
     url: https://opensource.org/licenses/MIT
@@ -30,42 +30,36 @@ tags:
     description: Xác thực người dùng và cấp phát JWT Token
 
 paths:
-  # Endpoints xác thực
   /auth/login:
-    $ref: './paths/auth.yaml#/login'
+    $ref: "./paths/auth.yaml#/login"
   /auth/register:
-    $ref: './paths/auth.yaml#/register'
+    $ref: "./paths/auth.yaml#/register"
   /auth/me:
-    $ref: './paths/auth.yaml#/me'
-  # Endpoints do TV2 phụ trách
+    $ref: "./paths/auth.yaml#/me"
   /books:
-    $ref: './paths/books.yaml#/books'
+    $ref: "./paths/books.yaml#/books"
   /books/{id}:
-    $ref: './paths/books.yaml#/book_by_id'
-
-  # Endpoints do TV3 phụ trách
+    $ref: "./paths/books.yaml#/book_by_id"
   /authors:
-    $ref: './paths/authors.yaml#/authors'
+    $ref: "./paths/authors.yaml#/authors"
   /authors/{id}:
-    $ref: './paths/authors.yaml#/author_by_id'
-
-  # Endpoints do TV4 phụ trách
+    $ref: "./paths/authors.yaml#/author_by_id"
   /borrow:
-    $ref: './paths/borrow.yaml#/borrow'
+    $ref: "./paths/borrow.yaml#/borrow"
   /borrow/{id}:
-    $ref: './paths/borrow.yaml#/borrow_by_id'
+    $ref: "./paths/borrow.yaml#/borrow_by_id"
 
 components:
   schemas:
-    $ref: './components/schemas.yaml'
+    $ref: "./components/schemas.yaml"
   responses:
-    $ref: './components/responses.yaml'
+    $ref: "./components/responses.yaml"
   securitySchemes:
     BearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
-      description: "Nhập token xác thực định dạng JWT (Ví dụ: Bearer <token>)"
+      description: "Nhập token xác thực định dạng JWT"
 
 security:
   - BearerAuth: []
