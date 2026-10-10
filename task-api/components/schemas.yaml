@@ -139,11 +139,9 @@ Author:
       format: date-time
       example: "2025-11-20T10:00:00Z"
 
-# ==========================================
-# 4. BORROW SCHEMAS (TV4 phụ trách hoàn thiện)
-# ==========================================
+# 4. BORROW SCHEMAS
 
-# 1. Entity đầy đủ của phiếu mượn
+# Entity đầy đủ của phiếu mượn
 BorrowRecord:
   type: object
   required:
@@ -216,7 +214,7 @@ BorrowRecord:
       description: Thời điểm cập nhật lần cuối
       example: "2026-10-01T08:30:00Z"
 
-# 2. Schema yêu cầu tạo phiếu mượn mới (POST /borrow)
+# Schema yêu cầu tạo phiếu mượn mới (POST /borrow)
 BorrowCreateRequest:
   type: object
   required:
@@ -243,7 +241,7 @@ BorrowCreateRequest:
       description: Ghi chú ban đầu
       example: "Mượn phục vụ nghiên cứu luận văn"
 
-# 3. Schema cập nhật phiếu mượn / Trả sách / Gia hạn (PUT /borrow/{id})
+# Schema cập nhật phiếu mượn / Trả sách / Gia hạn (PUT /borrow/{id})
 BorrowUpdateRequest:
   type: object
   properties:
@@ -273,7 +271,7 @@ BorrowUpdateRequest:
       description: Tiền phạt thu thêm (nếu có)
       example: 10000.0
 
-# 4. Schema danh sách phiếu mượn trả về (GET /borrow)
+# Schema danh sách phiếu mượn trả về (GET /borrow)
 BorrowListResponse:
   type: object
   required:
