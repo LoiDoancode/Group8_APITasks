@@ -1,6 +1,3 @@
-# ==========================================
-# 1. CORE & COMMON SCHEMAS (TV1 thiết kế)
-# ==========================================
 ErrorDetail:
   type: object
   description: Chi tiết lỗi phát sinh theo từng trường dữ liệu
@@ -78,49 +75,105 @@ PaginationMeta:
 # 2. ENTITY SCHEMAS BASE (Khung nền cho TV2, TV3, TV4)
 # ==========================================
 
-# Base Book Schema (TV2 tiếp tục hoàn thiện các tham số nâng cao)
+# ---- TV2: Book Schema hoàn chỉnh ----
 Book:
   type: object
+  description: >
+    Thực thể đại diện cho một cuốn sách trong hệ thống thư viện.
+    Chứa đầy đủ thông tin mô tả, phân loại, số lượng và trạng thái sẵn có.
   required:
     - id
     - title
     - author_id
+    - category_id
     - category
     - quantity
   properties:
     id:
       type: string
       format: uuid
+      description: Mã định danh duy nhất của cuốn sách (UUID v4)
       example: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
     title:
       type: string
       maxLength: 255
+      description: Tiêu đề cuốn sách
       example: "Thiết Kế Kiến Trúc Microservices"
+    description:
+      type: string
+      maxLength: 2000
+      description: Mô tả ngắn gọn nội dung cuốn sách
+      example: "Cuốn sách hướng dẫn toàn diện về thiết kế và triển khai kiến trúc Microservices trong các hệ thống phân tán hiện đại."
     isbn:
       type: string
+      pattern: '^\d{3}-\d{1,5}-\d{1,7}-\d{1,7}-\d{1}$'
+      description: Mã ISBN (International Standard Book Number) theo chuẩn ISBN-13
       example: "978-3-16-148410-0"
     author_id:
       type: string
       format: uuid
+      description: Mã định danh của tác giả (liên kết đến Author)
       example: "b1f8bc88-8d0a-3ef7-aa5c-5aa8bd270f22"
+    category_id:
+      type: string
+      format: uuid
+      description: Mã định danh của danh mục/thể loại sách (dùng để lọc)
+      example: "f4c7bc55-5d0a-0ef4-772a-2ff5bd940c11"
     category:
       type: string
+      description: Tên danh mục/thể loại sách (hiển thị)
       example: "Công nghệ thông tin"
     published_year:
       type: integer
+      minimum: 1000
+      maximum: 2100
+      description: Năm xuất bản
       example: 2025
     quantity:
       type: integer
       minimum: 0
+      description: Tổng số lượng sách trong thư viện
       example: 20
     available_quantity:
       type: integer
       minimum: 0
+      description: Số lượng sách hiện có sẵn để mượn
       example: 15
     created_at:
       type: string
       format: date-time
+      description: Thời điểm bản ghi được tạo
       example: "2026-01-15T08:30:00Z"
+    updated_at:
+      type: string
+      format: date-time
+      description: Thời điểm bản ghi được cập nhật lần cuối
+      example: "2026-06-20T14:00:00Z"
+
+# ---- TV2: Response Schemas cho Books API ----
+BookListResponse:
+  type: object
+  description: Phản hồi danh sách sách kèm thông tin phân trang
+  required:
+    - data
+    - pagination
+  properties:
+    data:
+      type: array
+      description: Danh sách các cuốn sách phù hợp với điều kiện truy vấn
+      items:
+        $ref: "#/Book"
+    pagination:
+      $ref: "#/PaginationMeta"
+
+BookDetailResponse:
+  type: object
+  description: Phản hồi chi tiết một cuốn sách
+  required:
+    - data
+  properties:
+    data:
+      $ref: "#/Book"
 
 # Base Author Schema
 Author:
@@ -225,9 +278,7 @@ BorrowRecord:
       type: string
       enum: [pending, borrowed, returned, overdue]
       example: "borrowed"
-# ==========================================
-# 3. AUTH SCHEMAS (Xác thực người dùng)
-# ==========================================
+#Xác thực người dùng
 LoginRequest:
   type: object
   required:

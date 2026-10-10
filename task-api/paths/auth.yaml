@@ -3,30 +3,30 @@ login:
     tags:
       - Auth
     summary: Đăng nhập để nhận JWT Token
-    description: Gửi thông tin tài khoản (username/password) để nhận về Access Token.
-    security: [] # Endpoint này không yêu cầu token (ai cũng gọi được)
+    description: Gửi thông tin tài khoản (username/password) để nhận Access Token.
+    security: []
     requestBody:
       required: true
       content:
         application/json:
           schema:
-            $ref: '../components/schemas.yaml#/LoginRequest'
+            $ref: "../components/schemas.yaml#/LoginRequest"
       description: Thông tin đăng nhập
     responses:
-      '200':
+      "200":
         description: Đăng nhập thành công, trả về JWT Token
         content:
           application/json:
             schema:
-              $ref: '../components/schemas.yaml#/LoginResponse'
-      '400':
-        $ref: '../components/responses.yaml#/BadRequest'
-      '401':
+              $ref: "../components/schemas.yaml#/LoginResponse"
+      "400":
+        $ref: "../components/responses.yaml#/BadRequest"
+      "401":
         description: Sai tên đăng nhập hoặc mật khẩu
         content:
           application/json:
             schema:
-              $ref: '../components/schemas.yaml#/ErrorResponse'
+              $ref: "../components/schemas.yaml#/ErrorResponse"
             example:
               code: 401
               message: "Sai tên đăng nhập hoặc mật khẩu"
@@ -44,16 +44,16 @@ register:
       content:
         application/json:
           schema:
-            $ref: '../components/schemas.yaml#/RegisterRequest'
+            $ref: "../components/schemas.yaml#/RegisterRequest"
     responses:
-      '201':
+      "201":
         description: Đăng ký thành công
         content:
           application/json:
             schema:
-              $ref: '../components/schemas.yaml#/User'
-      '400':
-        $ref: '../components/responses.yaml#/BadRequest'
+              $ref: "../components/schemas.yaml#/User"
+      "400":
+        $ref: "../components/responses.yaml#/BadRequest"
 
 me:
   get:
@@ -62,11 +62,11 @@ me:
     summary: Lấy thông tin cá nhân
     description: Lấy thông tin của người dùng hiện tại (cần token).
     responses:
-      '200':
+      "200":
         description: Thông tin tài khoản của bạn
         content:
           application/json:
             schema:
-              $ref: '../components/schemas.yaml#/User'
-      '401':
-        $ref: '../components/responses.yaml#/Unauthorized'
+              $ref: "../components/schemas.yaml#/User"
+      "401":
+        $ref: "../components/responses.yaml#/Unauthorized"
