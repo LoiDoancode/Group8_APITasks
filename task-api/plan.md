@@ -27,15 +27,13 @@ Group8_APITasks/
 
 ---
 
-## II. BẢNG PHÂN CÔNG NHIỆM VỤ 5 THÀNH VIÊN
-
-| Thành viên | Phân hệ / Nhiệm vụ phụ trách | File làm việc chính | Trạng thái |
-| :--- | :--- | :--- | :--- |
-| **Thành viên 1** *(Doãn Duy Lợi - Leader)* | Setup khung dự án, Root Spec, Auth APIs, Quản trị Git/PR | `openAI.yaml`, `paths/auth.yaml`, `components/` | ✅ **Đã hoàn thành khung** |
-| **Thành viên 2** | **Phần 1 Paths:** Toàn bộ API Quản lý Sách (Query & CRUD) | `paths/books.yaml`, `components/schemas.yaml` | ⏳ Đang thực hiện |
-| **Thành viên 3** | **Phần 2 Paths:** Toàn bộ API Quản lý Tác giả (Query & CRUD) | `paths/authors.yaml`, `components/schemas.yaml` | ⏳ Đang thực hiện |
-| **Thành viên 4** | **Phần 3 Paths:** Toàn bộ API Quy trình Mượn & Trả sách | `paths/borrow.yaml`, `components/schemas.yaml` | ⏳ Đang thực hiện |
-| **Thành viên 5** | Phối hợp cùng TV1 (Auth, Schemas/Responses, QA) + **Viết README.md** | `README.md`, `paths/auth.yaml`, `components/` | ⏳ Đang thực hiện |
+## II. BẢNG PHÂN| Thành viên | Phân hệ / Nhiệm vụ phụ trách | File làm việc chính |
+| :--- | :--- | :--- |
+| **Thành viên 1** *(Doãn Duy Lợi - Leader)* | Setup khung dự án, Root Spec, Auth APIs, Quản trị Git/PR | `openAI.yaml`, `paths/auth.yaml`, `components/` |
+| **Thành viên 2** | **Phần 1 Paths:** Toàn bộ API Quản lý Sách (Query & CRUD) | `paths/books.yaml`, `components/schemas.yaml` |
+| **Thành viên 3** | **Phần 2 Paths:** Toàn bộ API Quản lý Tác giả (Query & CRUD) | `paths/authors.yaml`, `components/schemas.yaml` |
+| **Thành viên 4** | **Phần 3 Paths:** Toàn bộ API Quy trình Mượn & Trả sách | `paths/borrow.yaml`, `components/schemas.yaml` |
+| **Thành viên 5** | Phối hợp cùng TV1 (Auth, Schemas/Responses, QA) + **Viết README.md** | `README.md`, `paths/auth.yaml`, `components/` |`, `components/` | ⏳ Đang thực hiện |
 
 ---
 

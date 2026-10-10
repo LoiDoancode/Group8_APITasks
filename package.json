@@ -1,0 +1,19 @@
+{
+  "name": "book-management-api-group8",
+  "version": "1.0.0",
+  "description": "OpenAPI specification cho hệ thống quản lý thư viện sách (Group 8)",
+  "main": "task-api/openAI.yaml",
+  "scripts": {
+    "lint": "redocly lint task-api/openAI.yaml",
+    "bundle": "redocly bundle task-api/openAI.yaml -o dist/openapi.yaml",
+    "preview": "redocly preview-docs task-api/openAI.yaml",
+    "mock": "prism mock task-api/openAI.yaml"
+  },
+  "author": "Group 8",
+  "license": "MIT",
+  "devDependencies": {
+    "@redocly/cli": "^1.25.0",
+    "@stoplight/prism-cli": "^5.8.0",
+    "npm-run-all": "^4.1.5"
+  }
+}
