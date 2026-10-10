@@ -45,6 +45,31 @@ NotFound:
         message: "Không tìm thấy dữ liệu yêu cầu"
         timestamp: "2026-10-08T19:40:00Z"
 
+Conflict:
+  description: Xung đột dữ liệu, tài nguyên đã tồn tại hoặc trạng thái không cho phép thao tác.
+  content:
+    application/json:
+      schema:
+        $ref: "./schemas.yaml#/ErrorResponse"
+      example:
+        code: 409
+        message: "Sách đã hết, không thể mượn"
+        timestamp: "2026-10-08T19:40:00Z"
+
+UnprocessableEntity:
+  description: Dữ liệu đúng cú pháp nhưng không hợp lệ về mặt nghiệp vụ.
+  content:
+    application/json:
+      schema:
+        $ref: "./schemas.yaml#/ErrorResponse"
+      example:
+        code: 422
+        message: "Dữ liệu không thể xử lý"
+        timestamp: "2026-10-08T19:40:00Z"
+        details:
+          - field: "published_year"
+            issue: "Năm xuất bản không được lớn hơn năm hiện tại"
+
 InternalServerError:
   description: Lỗi máy chủ nội bộ.
   content:

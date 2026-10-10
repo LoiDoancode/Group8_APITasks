@@ -3,6 +3,10 @@
 # ==========================================
 ErrorDetail:
   type: object
+  description: Chi tiết lỗi phát sinh theo từng trường dữ liệu
+  required:
+    - field
+    - issue
   properties:
     field:
       type: string
@@ -15,6 +19,7 @@ ErrorDetail:
 
 ErrorResponse:
   type: object
+  description: Cấu trúc phản hồi lỗi chuẩn
   required:
     - code
     - message
@@ -35,6 +40,7 @@ ErrorResponse:
       example: "2026-10-08T19:40:00Z"
     details:
       type: array
+      description: Danh sách chi tiết lỗi theo từng trường dữ liệu (nếu có)
       items:
         $ref: "#/ErrorDetail"
 
@@ -49,19 +55,23 @@ PaginationMeta:
     page:
       type: integer
       minimum: 1
+      description: Trang hiện tại
       example: 1
     limit:
       type: integer
       minimum: 1
       maximum: 100
+      description: Số phần tử tối đa trên mỗi trang
       example: 10
     total_items:
       type: integer
       minimum: 0
+      description: Tổng số phần tử trong tập dữ liệu
       example: 150
     total_pages:
       type: integer
       minimum: 0
+      description: Tổng số trang (total_items / limit)
       example: 15
 
 # ==========================================
