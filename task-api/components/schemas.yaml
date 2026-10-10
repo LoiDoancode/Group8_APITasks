@@ -139,7 +139,11 @@ Author:
       format: date-time
       example: "2025-11-20T10:00:00Z"
 
-# Base Borrow Schema (TV4 tiếp tục hoàn thiện)
+# ==========================================
+# 4. BORROW SCHEMAS (TV4 phụ trách hoàn thiện)
+# ==========================================
+
+# 1. Entity đầy đủ của phiếu mượn
 BorrowRecord:
   type: object
   required:
@@ -153,32 +157,135 @@ BorrowRecord:
     id:
       type: string
       format: uuid
+      description: Mã định danh duy nhất của phiếu mượn
       example: "c2a7bc77-7e0a-2ef6-994b-4bb7bd160e33"
     book_id:
       type: string
       format: uuid
+      description: ID cuốn sách được mượn
       example: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
     user_id:
       type: string
       format: uuid
+      description: ID người mượn sách
       example: "d3b6bc66-6f0a-1ef5-883a-3aa6bd050d44"
     borrow_date:
       type: string
       format: date
+      description: Ngày bắt đầu mượn sách
       example: "2026-10-01"
     due_date:
       type: string
       format: date
+      description: Hạn chót phải trả sách
       example: "2026-10-15"
     return_date:
       type: string
       format: date
       nullable: true
+      description: Ngày thực tế trả sách (null nếu chưa trả)
       example: null
     status:
       type: string
       enum: [pending, borrowed, returned, overdue]
+      description: Trạng thái phiếu mượn (đang chờ duyệt, đang mượn, đã trả, quá hạn)
       example: "borrowed"
+    renew_count:
+      type: integer
+      minimum: 0
+      description: Số lần đã gia hạn mượn
+      example: 0
+    note:
+      type: string
+      description: Ghi chú tình trạng sách hoặc thông tin mượn
+      example: "Sách mới, bìa nguyên vẹn"
+    fine_amount:
+      type: number
+      format: float
+      minimum: 0
+      description: Tiền phạt nếu trả muộn hoặc làm hư hại sách (VNĐ)
+      example: 0.0
+    created_at:
+      type: string
+      format: date-time
+      description: Thời điểm tạo bản ghi
+      example: "2026-10-01T08:30:00Z"
+    updated_at:
+      type: string
+      format: date-time
+      description: Thời điểm cập nhật lần cuối
+      example: "2026-10-01T08:30:00Z"
+
+# 2. Schema yêu cầu tạo phiếu mượn mới (POST /borrow)
+BorrowCreateRequest:
+  type: object
+  required:
+    - book_id
+    - user_id
+  properties:
+    book_id:
+      type: string
+      format: uuid
+      description: ID của cuốn sách muốn mượn
+      example: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+    user_id:
+      type: string
+      format: uuid
+      description: ID của người mượn sách
+      example: "d3b6bc66-6f0a-1ef5-883a-3aa6bd050d44"
+    due_date:
+      type: string
+      format: date
+      description: Ngày dự kiến trả (nếu không điền sẽ mặc định theo quy định thư viện, ví dụ +14 ngày)
+      example: "2026-10-25"
+    note:
+      type: string
+      description: Ghi chú ban đầu
+      example: "Mượn phục vụ nghiên cứu luận văn"
+
+# 3. Schema cập nhật phiếu mượn / Trả sách / Gia hạn (PUT /borrow/{id})
+BorrowUpdateRequest:
+  type: object
+  properties:
+    status:
+      type: string
+      enum: [borrowed, returned, overdue]
+      description: Cập nhật trạng thái phiếu mượn
+      example: "returned"
+    return_date:
+      type: string
+      format: date
+      description: Ngày thực tế trả sách (bắt buộc khi status = returned)
+      example: "2026-10-14"
+    due_date:
+      type: string
+      format: date
+      description: Gia hạn ngày hẹn trả
+      example: "2026-10-30"
+    note:
+      type: string
+      description: Ghi chú khi trả hoặc gia hạn (tình trạng sách lúc trả)
+      example: "Đã trả đủ sách, gáy sách hơi sờn"
+    fine_amount:
+      type: number
+      format: float
+      minimum: 0
+      description: Tiền phạt thu thêm (nếu có)
+      example: 10000.0
+
+# 4. Schema danh sách phiếu mượn trả về (GET /borrow)
+BorrowListResponse:
+  type: object
+  required:
+    - data
+    - pagination
+  properties:
+    data:
+      type: array
+      items:
+        $ref: '#/BorrowRecord'
+    pagination:
+      $ref: '#/PaginationMeta'
 # ==========================================
 # 3. AUTH SCHEMAS (Xác thực người dùng)
 # ==========================================

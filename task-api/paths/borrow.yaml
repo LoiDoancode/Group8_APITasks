@@ -1,0 +1,160 @@
+borrow:
+  get:
+    tags:
+      - Borrow
+    summary: Lấy danh sách phiếu mượn
+    description: Truy vấn danh sách các phiếu mượn sách có phân trang và bộ lọc theo người dùng hoặc trạng thái.
+    parameters:
+      - name: page
+        in: query
+        description: Số trang hiện tại
+        required: false
+        schema:
+          type: integer
+          default: 1
+          minimum: 1
+      - name: limit
+        in: query
+        description: Số lượng bản ghi mỗi trang
+        required: false
+        schema:
+          type: integer
+          default: 10
+          minimum: 1
+          maximum: 100
+      - name: user_id
+        in: query
+        description: Lọc phiếu mượn theo ID người dùng
+        required: false
+        schema:
+          type: string
+          format: uuid
+      - name: status
+        in: query
+        description: Lọc theo trạng thái mượn sách
+        required: false
+        schema:
+          type: string
+          enum: [pending, borrowed, returned, overdue]
+    responses:
+      '200':
+        description: Lấy danh sách phiếu mượn thành công
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas.yaml#/BorrowListResponse'
+      '401':
+        $ref: '../components/responses.yaml#/Unauthorized'
+      '500':
+        $ref: '../components/responses.yaml#/InternalServerError'
+
+  post:
+    tags:
+      - Borrow
+    summary: Tạo phiếu mượn sách mới
+    description: Đăng ký mượn sách cho một người dùng.
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas.yaml#/BorrowCreateRequest'
+    responses:
+      '201':
+        description: Tạo phiếu mượn thành công
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas.yaml#/BorrowRecord'
+      '400':
+        $ref: '../components/responses.yaml#/BadRequest'
+      '401':
+        $ref: '../components/responses.yaml#/Unauthorized'
+      '403':
+        $ref: '../components/responses.yaml#/Forbidden'
+      '404':
+        $ref: '../components/responses.yaml#/NotFound'
+      '500':
+        $ref: '../components/responses.yaml#/InternalServerError'
+
+borrow_by_id:
+  parameters:
+    - name: id
+      in: path
+      required: true
+      description: ID của phiếu mượn
+      schema:
+        type: string
+        format: uuid
+        example: "c2a7bc77-7e0a-2ef6-994b-4bb7bd160e33"
+
+  get:
+    tags:
+      - Borrow
+    summary: Xem chi tiết phiếu mượn
+    description: Lấy thông tin chi tiết của một phiếu mượn cụ thể.
+    responses:
+      '200':
+        description: Lấy thông tin phiếu mượn thành công
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas.yaml#/BorrowRecord'
+      '401':
+        $ref: '../components/responses.yaml#/Unauthorized'
+      '404':
+        $ref: '../components/responses.yaml#/NotFound'
+      '500':
+        $ref: '../components/responses.yaml#/InternalServerError'
+
+  put:
+    tags:
+      - Borrow
+    summary: Cập nhật phiếu mượn (Trả sách / Gia hạn)
+    description: Cập nhật trạng thái phiếu mượn sang đã trả (`returned`) hoặc thay đổi ngày hẹn trả (`due_date`).
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas.yaml#/BorrowUpdateRequest'
+    responses:
+      '200':
+        description: Cập nhật phiếu mượn thành công
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas.yaml#/BorrowRecord'
+      '400':
+        $ref: '../components/responses.yaml#/BadRequest'
+      '401':
+        $ref: '../components/responses.yaml#/Unauthorized'
+      '404':
+        $ref: '../components/responses.yaml#/NotFound'
+      '500':
+        $ref: '../components/responses.yaml#/InternalServerError'
+
+  delete:
+    tags:
+      - Borrow
+    summary: Hủy / Xóa phiếu mượn
+    description: Hủy phiếu mượn khi sách chưa được xuất kho hoặc xóa bản ghi mượn.
+    responses:
+      '200':
+        description: Hủy phiếu mượn thành công
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: "Hủy phiếu mượn thành công"
+      '401':
+        $ref: '../components/responses.yaml#/Unauthorized'
+      '403':
+        $ref: '../components/responses.yaml#/Forbidden'
+      '404':
+        $ref: '../components/responses.yaml#/NotFound'
+      '500':
+        $ref: '../components/responses.yaml#/InternalServerError'
