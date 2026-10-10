@@ -1,0 +1,220 @@
+# ============================================================
+# TV2: API Quản lý Sách - Part 1: Query & Detail
+# Người phụ trách: Thành viên 2
+# Endpoints: GET /books, GET /books/{id}
+# ============================================================
+
+books:
+  get:
+    tags:
+      - Books
+    summary: Lấy danh sách sách
+    description: >
+      Truy vấn danh sách sách trong thư viện với hỗ trợ:
+      - **Phân trang**: `page` và `limit`
+      - **Tìm kiếm**: theo `title` (tìm kiếm gần đúng, không phân biệt hoa/thường)
+      - **Lọc**: theo `category_id` (mã danh mục)
+
+
+      Kết quả trả về được sắp xếp theo `created_at` giảm dần (sách mới nhất lên đầu).
+    operationId: getBooks
+    parameters:
+      # ---- Phân trang ----
+      - name: page
+        in: query
+        required: false
+        description: >
+          Số trang hiện tại (bắt đầu từ 1).
+          Mặc định: 1.
+        schema:
+          type: integer
+          minimum: 1
+          default: 1
+          example: 1
+
+      - name: limit
+        in: query
+        required: false
+        description: >
+          Số lượng bản ghi tối đa trên mỗi trang.
+          Mặc định: 10. Tối đa: 100.
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 10
+          example: 10
+
+      # ---- Tìm kiếm ----
+      - name: title
+        in: query
+        required: false
+        description: >
+          Từ khóa tìm kiếm theo tiêu đề sách.
+          Hỗ trợ tìm kiếm gần đúng (LIKE '%keyword%'), không phân biệt hoa thường.
+        schema:
+          type: string
+          maxLength: 255
+          example: "Microservices"
+
+      # ---- Lọc ----
+      - name: category_id
+        in: query
+        required: false
+        description: >
+          Lọc sách theo mã danh mục/thể loại (UUID).
+          Chỉ trả về các sách thuộc danh mục có `category_id` tương ứng.
+        schema:
+          type: string
+          format: uuid
+          example: "f4c7bc55-5d0a-0ef4-772a-2ff5bd940c11"
+
+    responses:
+      "200":
+        description: Truy vấn thành công — Trả về danh sách sách và thông tin phân trang.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas.yaml#/BookListResponse"
+            examples:
+              success_with_data:
+                summary: Có kết quả trả về
+                value:
+                  data:
+                    - id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+                      title: "Thiết Kế Kiến Trúc Microservices"
+                      description: "Cuốn sách hướng dẫn toàn diện về thiết kế và triển khai kiến trúc Microservices."
+                      isbn: "978-3-16-148410-0"
+                      author_id: "b1f8bc88-8d0a-3ef7-aa5c-5aa8bd270f22"
+                      category_id: "f4c7bc55-5d0a-0ef4-772a-2ff5bd940c11"
+                      category: "Công nghệ thông tin"
+                      published_year: 2025
+                      quantity: 20
+                      available_quantity: 15
+                      created_at: "2026-01-15T08:30:00Z"
+                      updated_at: "2026-06-20T14:00:00Z"
+                    - id: "d3e5fc22-1a2b-4c3d-8e4f-5g6h7i8j9k01"
+                      title: "Lập Trình Python Nâng Cao"
+                      description: "Hướng dẫn chi tiết các kỹ thuật lập trình Python cho lập trình viên chuyên nghiệp."
+                      isbn: "978-1-23-456789-0"
+                      author_id: "e4c9bd77-2b3c-5d4e-9f50-6h7i8j9k0l12"
+                      category_id: "f4c7bc55-5d0a-0ef4-772a-2ff5bd940c11"
+                      category: "Công nghệ thông tin"
+                      published_year: 2024
+                      quantity: 30
+                      available_quantity: 22
+                      created_at: "2026-02-10T10:15:00Z"
+                      updated_at: "2026-07-05T09:00:00Z"
+                  pagination:
+                    page: 1
+                    limit: 10
+                    total_items: 150
+                    total_pages: 15
+              success_empty:
+                summary: Không có kết quả
+                value:
+                  data: []
+                  pagination:
+                    page: 1
+                    limit: 10
+                    total_items: 0
+                    total_pages: 0
+
+      "400":
+        description: >
+          Tham số truy vấn không hợp lệ (ví dụ: `page` < 1, `limit` > 100,
+          `category_id` không đúng định dạng UUID).
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas.yaml#/ErrorResponse"
+            example:
+              code: 400
+              message: "Tham số truy vấn không hợp lệ"
+              timestamp: "2026-10-10T14:00:00Z"
+              details:
+                - field: "page"
+                  issue: "Giá trị page phải là số nguyên lớn hơn hoặc bằng 1"
+
+      "401":
+        $ref: "../components/responses.yaml#/Unauthorized"
+
+      "500":
+        $ref: "../components/responses.yaml#/InternalServerError"
+
+# ============================================================
+# GET /books/{id} — Xem chi tiết một cuốn sách
+# ============================================================
+book_by_id:
+  get:
+    tags:
+      - Books
+    summary: Xem chi tiết một cuốn sách
+    description: >
+      Lấy toàn bộ thông tin chi tiết của một cuốn sách dựa theo `id` (UUID).
+      Trả về đầy đủ các trường dữ liệu bao gồm mô tả, tác giả, danh mục,
+      số lượng và trạng thái sẵn có.
+    operationId: getBookById
+    parameters:
+      - name: id
+        in: path
+        required: true
+        description: Mã định danh duy nhất của cuốn sách (UUID v4)
+        schema:
+          type: string
+          format: uuid
+          example: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+
+    responses:
+      "200":
+        description: Truy vấn thành công — Trả về chi tiết cuốn sách.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas.yaml#/BookDetailResponse"
+            example:
+              data:
+                id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+                title: "Thiết Kế Kiến Trúc Microservices"
+                description: "Cuốn sách hướng dẫn toàn diện về thiết kế và triển khai kiến trúc Microservices trong các hệ thống phân tán hiện đại."
+                isbn: "978-3-16-148410-0"
+                author_id: "b1f8bc88-8d0a-3ef7-aa5c-5aa8bd270f22"
+                category_id: "f4c7bc55-5d0a-0ef4-772a-2ff5bd940c11"
+                category: "Công nghệ thông tin"
+                published_year: 2025
+                quantity: 20
+                available_quantity: 15
+                created_at: "2026-01-15T08:30:00Z"
+                updated_at: "2026-06-20T14:00:00Z"
+
+      "400":
+        description: >
+          Tham số `id` không đúng định dạng UUID.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas.yaml#/ErrorResponse"
+            example:
+              code: 400
+              message: "Tham số id không hợp lệ"
+              timestamp: "2026-10-10T14:00:00Z"
+              details:
+                - field: "id"
+                  issue: "Giá trị id phải là chuỗi UUID hợp lệ"
+
+      "401":
+        $ref: "../components/responses.yaml#/Unauthorized"
+
+      "404":
+        description: Không tìm thấy cuốn sách với id đã cung cấp.
+        content:
+          application/json:
+            schema:
+              $ref: "../components/schemas.yaml#/ErrorResponse"
+            example:
+              code: 404
+              message: "Không tìm thấy sách với id đã cung cấp"
+              timestamp: "2026-10-10T14:00:00Z"
+
+      "500":
+        $ref: "../components/responses.yaml#/InternalServerError"
