@@ -23,14 +23,26 @@
 | Module | Mô tả |
 | :-- | :-- |
 | **Auth** | Đăng nhập, đăng ký, xem thông tin cá nhân (JWT Bearer Token) |
-![alt text](docs\images\image-3.png)
-![alt text](docs\images\image.png)
 | **Books** | CRUD sách, phân trang, tìm kiếm theo `title`, lọc theo `category_id` |
-![alt text](docs\images\image.png)
 | **Authors** | CRUD tác giả, phân trang, tìm kiếm theo tên |
-![alt text](docs\images\image-1.png)
 | **Borrows** | Tạo phiếu mượn, gia hạn/trả sách, hủy phiếu, lọc theo `user_id` và `status` |
-![alt text](docs\images\image-2.png)
+
+### Minh hoạ
+**Auth**
+
+![Auth - đăng nhập](docs/images/image-3.png)
+
+**Books**
+
+![Books - danh sách sách](docs/images/image.png)
+
+**Authors**
+
+![Authors - danh sách tác giả](docs/images/image-1.png)
+
+**Borrows**
+
+![Borrows - phiếu mượn](docs/images/image-2.png)
 
 **Điểm kỹ thuật nổi bật**
 
@@ -209,9 +221,9 @@ Các endpoint danh sách nhận `page` (mặc định 1) và `limit` (mặc đ�
 ## Ảnh minh họa
 
 > Runnable "Try it out"
-![alt text](docs\images\image-4.png)
-![alt text](docs\images\image-5.png)
-![alt text](docs\images\image-6.png)
+![alt text](docs/images/image-4.png)
+![alt text](docs/images/image-5.png)
+![alt text](docs/images/image-6.png)
 
 ---
 
