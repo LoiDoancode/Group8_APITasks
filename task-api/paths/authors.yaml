@@ -1,10 +1,9 @@
-# 1. Khối ứng với key #/authors trong file openapi.yaml
 authors:
   get:
     tags:
       - Authors
     summary: Lấy danh sách tác giả
-    description: Lấy danh sách tất cả tác giả trong thư viện, hỗ trợ phân trang.
+    description: Lấy danh sách tất cả tác giả trong thư viện, hỗ trợ phân trang và tìm kiếm theo tên.
     parameters:
       - name: page
         in: query
@@ -18,38 +17,50 @@ authors:
         schema:
           type: integer
           default: 10
+      - name: name
+        in: query
+        required: false
+        description: Tìm kiếm tác giả theo họ tên (hỗ trợ tìm kiếm gần đúng)
+        schema:
+          type: string
+          maxLength: 100
+          example: "Nguyễn Nhật Ánh"
     responses:
-      '200':
-        description: Danh sách tác giả
+      "200":
+        description: Lấy danh sách tác giả thành công kèm thông tin phân trang
         content:
           application/json:
             schema:
-              type: array
-              items:
-                $ref: '../components/schemas.yaml#/AuthorResponse'
-      '500':
-        $ref: '../components/responses.yaml#/InternalServerError'
+              $ref: "../components/schemas.yaml#/AuthorListResponse"
+      "400":
+        $ref: "../components/responses.yaml#/BadRequest"
+      "500":
+        $ref: "../components/responses.yaml#/InternalServerError"
 
   post:
     tags:
       - Authors
     summary: Thêm tác giả mới
-    description: Tạo hồ sơ cho một tác giả mới. (Đã yêu cầu BearerAuth từ file gốc).
+    description: Tạo hồ sơ cho một tác giả mới (yêu cầu BearerAuth).
     requestBody:
       required: true
       content:
         application/json:
           schema:
-            $ref: '../components/schemas.yaml#/AuthorRequest'
+            $ref: "../components/schemas.yaml#/AuthorRequest"
     responses:
-      '201':
+      "201":
         description: Tạo tác giả thành công
         content:
           application/json:
             schema:
-              $ref: '../components/schemas.yaml#/AuthorResponse'
-      '400':
-        $ref: '../components/responses.yaml#/BadRequest'
+              $ref: "../components/schemas.yaml#/AuthorResponse"
+      "400":
+        $ref: "../components/responses.yaml#/BadRequest"
+      "401":
+        $ref: "../components/responses.yaml#/Unauthorized"
+      "500":
+        $ref: "../components/responses.yaml#/InternalServerError"
 
 # 2. Khối ứng với key #/author_by_id trong file openapi.yaml
 author_by_id:
@@ -57,53 +68,72 @@ author_by_id:
     - name: id
       in: path
       required: true
-      description: ID của tác giả
+      description: ID của tác giả (UUID v4)
       schema:
         type: string
         format: uuid
+        example: "b1f8bc88-8d0a-3ef7-aa5c-5aa8bd270f22"
 
   get:
     tags:
       - Authors
     summary: Xem chi tiết tác giả
     responses:
-      '200':
+      "200":
         description: Lấy thông tin thành công
         content:
           application/json:
             schema:
-              $ref: '../components/schemas.yaml#/AuthorResponse'
-      '404':
-        $ref: '../components/responses.yaml#/NotFound'
+              $ref: "../components/schemas.yaml#/AuthorResponse"
+      "400":
+        $ref: "../components/responses.yaml#/BadRequest"
+      "401":
+        $ref: "../components/responses.yaml#/Unauthorized"
+      "404":
+        $ref: "../components/responses.yaml#/NotFound"
+      "500":
+        $ref: "../components/responses.yaml#/InternalServerError"
 
   put:
     tags:
       - Authors
     summary: Cập nhật thông tin tác giả
+    description: Cập nhật thông tin tác giả theo ID (yêu cầu BearerAuth).
     requestBody:
       required: true
       content:
         application/json:
           schema:
-            $ref: '../components/schemas.yaml#/AuthorRequest'
+            $ref: "../components/schemas.yaml#/AuthorRequest"
     responses:
-      '200':
+      "200":
         description: Cập nhật thành công
         content:
           application/json:
             schema:
-              $ref: '../components/schemas.yaml#/AuthorResponse'
-      '400':
-        $ref: '../components/responses.yaml#/BadRequest'
-      '404':
-        $ref: '../components/responses.yaml#/NotFound'
+              $ref: "../components/schemas.yaml#/AuthorResponse"
+      "400":
+        $ref: "../components/responses.yaml#/BadRequest"
+      "401":
+        $ref: "../components/responses.yaml#/Unauthorized"
+      "404":
+        $ref: "../components/responses.yaml#/NotFound"
+      "500":
+        $ref: "../components/responses.yaml#/InternalServerError"
 
   delete:
     tags:
       - Authors
     summary: Xóa tác giả
+    description: Xóa tác giả khỏi hệ thống theo ID (yêu cầu BearerAuth).
     responses:
-      '204':
+      "204":
         description: Xóa thành công (Không trả về dữ liệu)
-      '404':
-        $ref: '../components/responses.yaml#/NotFound'
+      "400":
+        $ref: "../components/responses.yaml#/BadRequest"
+      "401":
+        $ref: "../components/responses.yaml#/Unauthorized"
+      "404":
+        $ref: "../components/responses.yaml#/NotFound"
+      "500":
+        $ref: "../components/responses.yaml#/InternalServerError"

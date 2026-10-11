@@ -71,11 +71,6 @@ PaginationMeta:
       description: Tổng số trang (total_items / limit)
       example: 15
 
-# ==========================================
-# 2. ENTITY SCHEMAS BASE (Khung nền cho TV2, TV3, TV4)
-# ==========================================
-
-# ---- TV2: Book Schema hoàn chỉnh ----
 Book:
   type: object
   description: >
@@ -150,7 +145,6 @@ Book:
       description: Thời điểm bản ghi được cập nhật lần cuối
       example: "2026-06-20T14:00:00Z"
 
-# ---- TV2: Response Schemas cho Books API ----
 BookListResponse:
   type: object
   description: Phản hồi danh sách sách kèm thông tin phân trang
@@ -175,7 +169,100 @@ BookDetailResponse:
     data:
       $ref: "#/Book"
 
-# Base Author Schema
+BookCreateInput:
+  type: object
+  description: Thông tin yêu cầu khi thêm mới một cuốn sách vào thư viện
+  required:
+    - title
+    - author_id
+    - category_id
+    - category
+    - quantity
+  properties:
+    title:
+      type: string
+      maxLength: 255
+      description: Tiêu đề cuốn sách
+      example: "Thiết Kế Kiến Trúc Microservices"
+    description:
+      type: string
+      maxLength: 2000
+      description: Mô tả nội dung cuốn sách
+      example: "Cuốn sách hướng dẫn toàn diện về thiết kế và triển khai kiến trúc Microservices trong các hệ thống phân tán hiện đại."
+    isbn:
+      type: string
+      pattern: '^\d{3}-\d{1,5}-\d{1,7}-\d{1,7}-\d{1}$'
+      description: Mã ISBN-13
+      example: "978-3-16-148410-0"
+    author_id:
+      type: string
+      format: uuid
+      description: ID tác giả viết cuốn sách
+      example: "b1f8bc88-8d0a-3ef7-aa5c-5aa8bd270f22"
+    category_id:
+      type: string
+      format: uuid
+      description: ID thể loại/danh mục sách
+      example: "f4c7bc55-5d0a-0ef4-772a-2ff5bd940c11"
+    category:
+      type: string
+      description: Tên thể loại/danh mục sách
+      example: "Công nghệ thông tin"
+    published_year:
+      type: integer
+      minimum: 1000
+      maximum: 2100
+      description: Năm xuất bản
+      example: 2025
+    quantity:
+      type: integer
+      minimum: 1
+      description: Tổng số lượng sách nhập kho
+      example: 20
+
+BookUpdateInput:
+  type: object
+  description: Thông tin cập nhật cho một cuốn sách (các trường không bắt buộc)
+  properties:
+    title:
+      type: string
+      maxLength: 255
+      description: Tiêu đề cuốn sách
+      example: "Thiết Kế Kiến Trúc Microservices (Tái bản 2026)"
+    description:
+      type: string
+      maxLength: 2000
+      description: Mô tả nội dung cuốn sách
+      example: "Cập nhật các mô hình kiến trúc hướng dịch vụ tiên tiến."
+    isbn:
+      type: string
+      pattern: '^\d{3}-\d{1,5}-\d{1,7}-\d{1,7}-\d{1}$'
+      example: "978-3-16-148410-0"
+    author_id:
+      type: string
+      format: uuid
+      example: "b1f8bc88-8d0a-3ef7-aa5c-5aa8bd270f22"
+    category_id:
+      type: string
+      format: uuid
+      example: "f4c7bc55-5d0a-0ef4-772a-2ff5bd940c11"
+    category:
+      type: string
+      example: "Công nghệ thông tin"
+    published_year:
+      type: integer
+      minimum: 1000
+      maximum: 2100
+      example: 2026
+    quantity:
+      type: integer
+      minimum: 0
+      example: 25
+    available_quantity:
+      type: integer
+      minimum: 0
+      example: 20
+
 Author:
   type: object
   required:
@@ -202,9 +289,89 @@ Author:
       format: date-time
       example: "2025-11-20T10:00:00Z"
 
-# 4. BORROW SCHEMAS
+AuthorRequest:
+  type: object
+  description: Dữ liệu gửi lên khi tạo mới hoặc cập nhật thông tin tác giả
+  required:
+    - name
+  properties:
+    name:
+      type: string
+      maxLength: 100
+      description: Họ và tên của tác giả
+      example: "Doãn Duy Lợi"
+    email:
+      type: string
+      format: email
+      description: Email liên hệ của tác giả
+      example: "24021549@vnu.edu.vn"
+    bio:
+      type: string
+      description: Tiểu sử ngắn gọn của tác giả
+      example: "Nhà văn nổi tiếng."
+    birth_date:
+      type: string
+      format: date
+      description: Ngày sinh của tác giả
+      example: "2006-11-22"
 
-# Entity đầy đủ của phiếu mượn
+AuthorResponse:
+  type: object
+  description: Thông tin chi tiết của một tác giả
+  required:
+    - id
+    - name
+  properties:
+    id:
+      type: string
+      format: uuid
+      description: Mã định danh duy nhất của tác giả (UUID v4)
+      example: "b1f8bc88-8d0a-3ef7-aa5c-5aa8bd270f22"
+    name:
+      type: string
+      maxLength: 100
+      description: Họ và tên của tác giả
+      example: "Doãn Duy Lợi"
+    email:
+      type: string
+      format: email
+      description: Email của tác giả
+      example: "24021549@vnu.edu.vn"
+    bio:
+      type: string
+      description: Tiểu sử của tác giả
+      example: "Nhà văn nổi tiếng."
+    birth_date:
+      type: string
+      format: date
+      description: Ngày sinh của tác giả
+      example: "2006-11-22"
+    created_at:
+      type: string
+      format: date-time
+      description: Thời điểm tạo bản ghi
+      example: "2025-11-20T10:00:00Z"
+    updated_at:
+      type: string
+      format: date-time
+      description: Thời điểm cập nhật lần cuối
+      example: "2026-06-20T14:00:00Z"
+
+AuthorListResponse:
+  type: object
+  description: Phản hồi danh sách tác giả kèm thông tin phân trang
+  required:
+    - data
+    - pagination
+  properties:
+    data:
+      type: array
+      description: Danh sách tác giả phù hợp điều kiện truy vấn
+      items:
+        $ref: "#/AuthorResponse"
+    pagination:
+      $ref: "#/PaginationMeta"
+
 BorrowRecord:
   type: object
   required:
@@ -277,7 +444,6 @@ BorrowRecord:
       description: Thời điểm cập nhật lần cuối
       example: "2026-10-01T08:30:00Z"
 
-# Schema yêu cầu tạo phiếu mượn mới (POST /borrow)
 BorrowCreateRequest:
   type: object
   required:
@@ -304,7 +470,6 @@ BorrowCreateRequest:
       description: Ghi chú ban đầu
       example: "Mượn phục vụ nghiên cứu luận văn"
 
-# Schema cập nhật phiếu mượn / Trả sách / Gia hạn (PUT /borrow/{id})
 BorrowUpdateRequest:
   type: object
   properties:
@@ -334,7 +499,6 @@ BorrowUpdateRequest:
       description: Tiền phạt thu thêm (nếu có)
       example: 10000.0
 
-# Schema danh sách phiếu mượn trả về (GET /borrow)
 BorrowListResponse:
   type: object
   required:
@@ -344,12 +508,10 @@ BorrowListResponse:
     data:
       type: array
       items:
-        $ref: '#/BorrowRecord'
+        $ref: "#/BorrowRecord"
     pagination:
-      $ref: '#/PaginationMeta'
-# ==========================================
-# 3. AUTH SCHEMAS (Xác thực người dùng)
-# ==========================================
+      $ref: "#/PaginationMeta"
+
 LoginRequest:
   type: object
   required:
@@ -389,18 +551,18 @@ RegisterRequest:
   properties:
     username:
       type: string
-      example: "nguyenvana"
+      example: "nguyenvanmuoi"
     password:
       type: string
       format: password
-      example: "matkhau123"
+      example: "tenbanlagi"
     email:
       type: string
       format: email
-      example: "nva@example.com"
+      example: "[EMAIL_ADDRESS]"
     full_name:
       type: string
-      example: "Nguyễn Văn A"
+      example: "Nguyễn Văn Mười"
 
 User:
   type: object
@@ -411,14 +573,14 @@ User:
       example: "e6f4a8b2-1b1c-4b1a-9f5b-1c5b8b9b8b9b"
     username:
       type: string
-      example: "nguyenvana"
+      example: "nguyenvanmuoi"
     email:
       type: string
       format: email
-      example: "nva@example.com"
+      example: "[EMAIL_ADDRESS]"
     full_name:
       type: string
-      example: "Nguyễn Văn A"
+      example: "Nguyễn Văn Mười"
     role:
       type: string
       enum: [admin, user, librarian]

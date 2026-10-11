@@ -9,9 +9,12 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 # 1. Route /openapi.json (trả về toàn bộ nội dung OpenAPI dạng JSON)
 @app.route('/openapi.json', methods=['GET'])
 def get_openapi_json():
-    # Tìm file openAI.yaml hoặc openapi.yaml
-    file_name = 'openAI.yaml' if os.path.exists(os.path.join(BASE_DIR, 'openAI.yaml')) else 'openapi.yaml'
-    yaml_path = os.path.join(BASE_DIR, file_name)
+    yaml_path = None
+    for fname in ['openAPI.yaml', 'openapi.yaml', 'openAI.yaml']:
+        candidate = os.path.join(BASE_DIR, fname)
+        if os.path.exists(candidate):
+            yaml_path = candidate
+            break
     
     with open(yaml_path, 'r', encoding='utf-8') as f:
         spec = yaml.safe_load(f)
@@ -66,9 +69,7 @@ def home():
     return redirect('/docs')
 
 if __name__ == '__main__':
-    print("====================================================")
-    print("🚀 Flask Server đang chạy tại: http://localhost:5000")
-    print("👉 Xem tài liệu Swagger UI:  http://localhost:5000/docs")
-    print("👉 Xem file OpenAPI JSON:     http://localhost:5000/openapi.json")
-    print("====================================================")
+    print(" Flask Server đang chạy tại: http://localhost:5000")
+    print(" Xem tài liệu Swagger UI:  http://localhost:5000/docs")
+    print(" Xem file OpenAPI JSON:     http://localhost:5000/openapi.json")
     app.run(host='0.0.0.0', port=5000, debug=True)
