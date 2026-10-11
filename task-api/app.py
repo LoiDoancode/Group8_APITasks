@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# 1. Route /openapi.json (trả về toàn bộ nội dung OpenAPI dạng JSON)
+# Route /openapi.json
 @app.route('/openapi.json', methods=['GET'])
 def get_openapi_json():
     yaml_path = None
@@ -18,6 +18,19 @@ def get_openapi_json():
     
     with open(yaml_path, 'r', encoding='utf-8') as f:
         spec = yaml.safe_load(f)
+    
+    # Nạp trực tiếp schemas.yaml vào components.schemas
+    schemas_file = os.path.join(BASE_DIR, 'components', 'schemas.yaml')
+    if os.path.exists(schemas_file):
+        with open(schemas_file, 'r', encoding='utf-8') as f:
+            spec.setdefault('components', {})['schemas'] = yaml.safe_load(f)
+
+    # Nạp trực tiếp responses.yaml vào components.responses
+    responses_file = os.path.join(BASE_DIR, 'components', 'responses.yaml')
+    if os.path.exists(responses_file):
+        with open(responses_file, 'r', encoding='utf-8') as f:
+            spec.setdefault('components', {})['responses'] = yaml.safe_load(f)
+
     return jsonify(spec)
 
 # 2. Hỗ trợ phục vụ các file YAML con trong paths/ và components/ khi Swagger UI gọi $ref
