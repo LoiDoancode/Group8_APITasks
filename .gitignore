@@ -26,3 +26,4 @@ db.sqlite3-journal
 # File hệ điều hành (macOS / Windows)
 .DS_Store
 Thumbs.db
+node_modules/

@@ -23,7 +23,7 @@ tags:
     description: Quản lý thông tin, tìm kiếm và cập nhật dữ liệu sách
   - name: Authors
     description: Quản lý hồ sơ, tiểu sử và tác phẩm của tác giả
-  - name: Borrow
+  - name: Borrows
     description: Quy trình lập phiếu mượn, gia hạn và trả sách
   - name: Auth
     description: Xác thực người dùng và cấp phát JWT Token
@@ -221,79 +221,25 @@ paths:
         - Books
       summary: Thêm sách mới vào thư viện
       description: |
-        Tạo bản ghi cho một cuốn sách mới trong hệ thống thư viện. Yêu cầu quyền **admin** hoặc **librarian**.
-
-        Các trường `id`, `available_quantity`, `created_at`, `updated_at` sẽ được hệ thống tự động sinh ra. `available_quantity` mặc định bằng `quantity` khi mới tạo.
+        Tạo mới một cuốn sách trong hệ thống thư viện (yêu cầu Bearer Token).
       operationId: createBook
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BookCreateRequest'
-            example:
-              title: Thiết Kế Kiến Trúc Microservices
-              description: Cuốn sách hướng dẫn toàn diện về thiết kế và triển khai kiến trúc Microservices.
-              isbn: 978-3-16-148410-0
-              author_id: b1f8bc88-8d0a-3ef7-aa5c-5aa8bd270f22
-              category_id: f4c7bc55-5d0a-0ef4-772a-2ff5bd940c11
-              category: Công nghệ thông tin
-              published_year: 2025
-              quantity: 20
+              $ref: '#/components/schemas/BookCreateInput'
       responses:
         '201':
-          description: Tạo sách thành công — Trả về thông tin cuốn sách vừa tạo.
+          description: Thêm sách thành công — Trả về thông tin chi tiết cuốn sách vừa tạo.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BookDetailResponse'
-              example:
-                data:
-                  id: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
-                  title: Thiết Kế Kiến Trúc Microservices
-                  description: Cuốn sách hướng dẫn toàn diện về thiết kế và triển khai kiến trúc Microservices.
-                  isbn: 978-3-16-148410-0
-                  author_id: b1f8bc88-8d0a-3ef7-aa5c-5aa8bd270f22
-                  category_id: f4c7bc55-5d0a-0ef4-772a-2ff5bd940c11
-                  category: Công nghệ thông tin
-                  published_year: 2025
-                  quantity: 20
-                  available_quantity: 20
-                  created_at: '2026-10-11T08:30:00Z'
-                  updated_at: '2026-10-11T08:30:00Z'
         '400':
-          description: |
-            Dữ liệu yêu cầu không hợp lệ (thiếu trường bắt buộc, sai định dạng ISBN, `author_id` hoặc `category_id` không đúng UUID, v.v.).
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                code: 400
-                message: Dữ liệu yêu cầu không hợp lệ
-                timestamp: '2026-10-11T08:30:00Z'
-                details:
-                  - field: title
-                    issue: Trường title không được để trống
-                  - field: isbn
-                    issue: Mã ISBN không đúng định dạng chuẩn ISBN-13
+          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '409':
-          description: |
-            Xung đột dữ liệu — Cuốn sách với mã ISBN đã tồn tại trong hệ thống.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                code: 409
-                message: Sách với ISBN 978-3-16-148410-0 đã tồn tại trong hệ thống
-                timestamp: '2026-10-11T08:30:00Z'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
         '500':
           $ref: '#/components/responses/InternalServerError'
   /books/{id}:
@@ -365,17 +311,15 @@ paths:
     put:
       tags:
         - Books
-      summary: Cập nhật thông tin một cuốn sách
+      summary: Cập nhật thông tin sách
       description: |
-        Cập nhật một hoặc nhiều trường thông tin của cuốn sách theo `id`. Yêu cầu quyền **admin** hoặc **librarian**.
-
-        Chỉ những trường được gửi lên mới được cập nhật (partial update). Trường `updated_at` tự động được cập nhật theo thời điểm hiện tại.
+        Cập nhật thông tin chi tiết của một cuốn sách theo `id` (yêu cầu Bearer Token).
       operationId: updateBook
       parameters:
         - name: id
           in: path
           required: true
-          description: Mã định danh duy nhất của cuốn sách cần cập nhật (UUID v4)
+          description: Mã định danh của cuốn sách (UUID v4)
           schema:
             type: string
             format: uuid
@@ -385,131 +329,47 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BookUpdateRequest'
-            example:
-              title: Thiết Kế Kiến Trúc Microservices - Ấn bản 2
-              quantity: 25
-              published_year: 2026
+              $ref: '#/components/schemas/BookUpdateInput'
       responses:
         '200':
-          description: Cập nhật thành công — Trả về thông tin cuốn sách sau khi cập nhật.
+          description: Cập nhật sách thành công — Trả về thông tin chi tiết mới nhất của cuốn sách.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BookDetailResponse'
-              example:
-                data:
-                  id: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
-                  title: Thiết Kế Kiến Trúc Microservices - Ấn bản 2
-                  description: Cuốn sách hướng dẫn toàn diện về thiết kế và triển khai kiến trúc Microservices.
-                  isbn: 978-3-16-148410-0
-                  author_id: b1f8bc88-8d0a-3ef7-aa5c-5aa8bd270f22
-                  category_id: f4c7bc55-5d0a-0ef4-772a-2ff5bd940c11
-                  category: Công nghệ thông tin
-                  published_year: 2026
-                  quantity: 25
-                  available_quantity: 20
-                  created_at: '2026-01-15T08:30:00Z'
-                  updated_at: '2026-10-11T10:00:00Z'
         '400':
-          description: |
-            Dữ liệu cập nhật không hợp lệ (sai định dạng UUID, ISBN không đúng chuẩn, `published_year` vượt quá năm hiện tại, v.v.).
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                code: 400
-                message: Dữ liệu cập nhật không hợp lệ
-                timestamp: '2026-10-11T10:00:00Z'
-                details:
-                  - field: published_year
-                    issue: Năm xuất bản không được lớn hơn năm hiện tại
+          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
         '404':
-          description: Không tìm thấy cuốn sách với id đã cung cấp.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                code: 404
-                message: Không tìm thấy sách với id đã cung cấp
-                timestamp: '2026-10-11T10:00:00Z'
-        '409':
-          description: |
-            Xung đột dữ liệu — Mã ISBN mới trùng với sách khác đã tồn tại.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                code: 409
-                message: ISBN 978-3-16-148410-1 đã được sử dụng bởi sách khác
-                timestamp: '2026-10-11T10:00:00Z'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
+          $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
     delete:
       tags:
         - Books
-      summary: Xóa một cuốn sách khỏi hệ thống
+      summary: Xóa sách khỏi thư viện
       description: |
-        Xóa vĩnh viễn bản ghi cuốn sách theo `id`. Yêu cầu quyền **admin**.
-
-        **Lưu ý**: Không thể xóa sách nếu vẫn còn phiếu mượn đang active (trạng thái `pending` hoặc `borrowed`). Phải trả hết sách trước khi xóa.
+        Xóa vĩnh viễn bản ghi sách khỏi thư viện theo `id` (yêu cầu Bearer Token).
       operationId: deleteBook
       parameters:
         - name: id
           in: path
           required: true
-          description: Mã định danh duy nhất của cuốn sách cần xóa (UUID v4)
+          description: Mã định danh của cuốn sách (UUID v4)
           schema:
             type: string
             format: uuid
             example: a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11
       responses:
-        '200':
-          description: Xóa sách thành công.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Xóa sách thành công
-              example:
-                message: Xóa sách thành công
+        '204':
+          description: Xóa sách thành công (Không trả về dữ liệu).
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
         '404':
-          description: Không tìm thấy cuốn sách với id đã cung cấp.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                code: 404
-                message: Không tìm thấy sách với id đã cung cấp
-                timestamp: '2026-10-11T10:00:00Z'
-        '409':
-          description: |
-            Không thể xóa — Sách vẫn còn phiếu mượn đang active.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                code: 409
-                message: Không thể xóa sách vì vẫn còn 3 phiếu mượn đang active
-                timestamp: '2026-10-11T10:00:00Z'
+          $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
   /authors:
@@ -517,7 +377,7 @@ paths:
       tags:
         - Authors
       summary: Lấy danh sách tác giả
-      description: Lấy danh sách tất cả tác giả trong thư viện, hỗ trợ phân trang.
+      description: Lấy danh sách tất cả tác giả trong thư viện, hỗ trợ phân trang và tìm kiếm theo tên.
       parameters:
         - name: page
           in: query
@@ -531,46 +391,59 @@ paths:
           schema:
             type: integer
             default: 10
+        - name: name
+          in: query
+          required: false
+          description: Tìm kiếm tác giả theo họ tên (hỗ trợ tìm kiếm gần đúng)
+          schema:
+            type: string
+            maxLength: 100
+            example: Nguyễn Nhật Ánh
       responses:
         '200':
-          description: Danh sách tác giả
+          description: Lấy danh sách tác giả thành công kèm thông tin phân trang
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: ../components/schemas.yaml#/AuthorResponse
+                $ref: '#/components/schemas/AuthorListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '500':
           $ref: '#/components/responses/InternalServerError'
     post:
       tags:
         - Authors
       summary: Thêm tác giả mới
-      description: Tạo hồ sơ cho một tác giả mới. (Đã yêu cầu BearerAuth từ file gốc).
+      description: Tạo hồ sơ cho một tác giả mới (yêu cầu BearerAuth).
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: ../components/schemas.yaml#/AuthorRequest
+              $ref: '#/components/schemas/AuthorRequest'
       responses:
         '201':
           description: Tạo tác giả thành công
           content:
             application/json:
               schema:
-                $ref: ../components/schemas.yaml#/AuthorResponse
+                $ref: '#/components/schemas/AuthorResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
   /authors/{id}:
     parameters:
       - name: id
         in: path
         required: true
-        description: ID của tác giả
+        description: ID của tác giả (UUID v4)
         schema:
           type: string
           format: uuid
+          example: b1f8bc88-8d0a-3ef7-aa5c-5aa8bd270f22
     get:
       tags:
         - Authors
@@ -581,43 +454,61 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ../components/schemas.yaml#/AuthorResponse
+                $ref: '#/components/schemas/AuthorResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
     put:
       tags:
         - Authors
       summary: Cập nhật thông tin tác giả
+      description: Cập nhật thông tin tác giả theo ID (yêu cầu BearerAuth).
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: ../components/schemas.yaml#/AuthorRequest
+              $ref: '#/components/schemas/AuthorRequest'
       responses:
         '200':
           description: Cập nhật thành công
           content:
             application/json:
               schema:
-                $ref: ../components/schemas.yaml#/AuthorResponse
+                $ref: '#/components/schemas/AuthorResponse'
         '400':
           $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
     delete:
       tags:
         - Authors
       summary: Xóa tác giả
+      description: Xóa tác giả khỏi hệ thống theo ID (yêu cầu BearerAuth).
       responses:
         '204':
           description: Xóa thành công (Không trả về dữ liệu)
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
-  /borrow:
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /borrows:
     get:
       tags:
-        - Borrow
+        - Borrows
       summary: Lấy danh sách phiếu mượn
       description: Truy vấn danh sách các phiếu mượn sách có phân trang và bộ lọc theo người dùng hoặc trạng thái.
       parameters:
@@ -669,7 +560,7 @@ paths:
           $ref: '#/components/responses/InternalServerError'
     post:
       tags:
-        - Borrow
+        - Borrows
       summary: Tạo phiếu mượn sách mới
       description: Đăng ký mượn sách cho một người dùng.
       requestBody:
@@ -695,7 +586,7 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalServerError'
-  /borrow/{id}:
+  /borrows/{id}:
     parameters:
       - name: id
         in: path
@@ -707,7 +598,7 @@ paths:
           example: c2a7bc77-7e0a-2ef6-994b-4bb7bd160e33
     get:
       tags:
-        - Borrow
+        - Borrows
       summary: Xem chi tiết phiếu mượn
       description: Lấy thông tin chi tiết của một phiếu mượn cụ thể.
       responses:
@@ -725,7 +616,7 @@ paths:
           $ref: '#/components/responses/InternalServerError'
     put:
       tags:
-        - Borrow
+        - Borrows
       summary: Cập nhật phiếu mượn (Trả sách / Gia hạn)
       description: Cập nhật trạng thái phiếu mượn sang đã trả (`returned`) hoặc thay đổi ngày hẹn trả (`due_date`).
       requestBody:
@@ -751,20 +642,14 @@ paths:
           $ref: '#/components/responses/InternalServerError'
     delete:
       tags:
-        - Borrow
+        - Borrows
       summary: Hủy / Xóa phiếu mượn
-      description: Hủy phiếu mượn khi sách chưa được xuất kho hoặc xóa bản ghi mượn.
+      description: Hủy phiếu mượn khi sách chưa được xuất kho hoặc xóa bản ghi mượn (yêu cầu BearerAuth).
       responses:
-        '200':
-          description: Hủy phiếu mượn thành công
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Hủy phiếu mượn thành công
+        '204':
+          description: Hủy/Xóa phiếu mượn thành công (Không trả về dữ liệu)
+        '400':
+          $ref: '#/components/responses/BadRequest'
         '401':
           $ref: '#/components/responses/Unauthorized'
         '403':
@@ -853,18 +738,18 @@ components:
       properties:
         username:
           type: string
-          example: nguyenvana
+          example: nguyenvanmuoi
         password:
           type: string
           format: password
-          example: matkhau123
+          example: tenbanlagi
         email:
           type: string
           format: email
-          example: nva@example.com
+          example: '[EMAIL_ADDRESS]'
         full_name:
           type: string
-          example: Nguyễn Văn A
+          example: Nguyễn Văn Mười
     User:
       type: object
       properties:
@@ -874,14 +759,14 @@ components:
           example: e6f4a8b2-1b1c-4b1a-9f5b-1c5b8b9b8b9b
         username:
           type: string
-          example: nguyenvana
+          example: nguyenvanmuoi
         email:
           type: string
           format: email
-          example: nva@example.com
+          example: '[EMAIL_ADDRESS]'
         full_name:
           type: string
-          example: Nguyễn Văn A
+          example: Nguyễn Văn Mười
         role:
           type: string
           enum:
@@ -1004,10 +889,9 @@ components:
             $ref: '#/components/schemas/Book'
         pagination:
           $ref: '#/components/schemas/PaginationMeta'
-    BookCreateRequest:
+    BookCreateInput:
       type: object
-      description: |
-        Dữ liệu cần thiết để tạo mới một cuốn sách trong hệ thống. Các trường `id`, `available_quantity`, `created_at`, `updated_at` sẽ được hệ thống tự động sinh ra, không cần truyền vào.
+      description: Thông tin yêu cầu khi thêm mới một cuốn sách vào thư viện
       required:
         - title
         - author_id
@@ -1023,26 +907,26 @@ components:
         description:
           type: string
           maxLength: 2000
-          description: Mô tả ngắn gọn nội dung cuốn sách
-          example: Cuốn sách hướng dẫn toàn diện về thiết kế và triển khai kiến trúc Microservices.
+          description: Mô tả nội dung cuốn sách
+          example: Cuốn sách hướng dẫn toàn diện về thiết kế và triển khai kiến trúc Microservices trong các hệ thống phân tán hiện đại.
         isbn:
           type: string
           pattern: ^\d{3}-\d{1,5}-\d{1,7}-\d{1,7}-\d{1}$
-          description: Mã ISBN theo chuẩn ISBN-13
+          description: Mã ISBN-13
           example: 978-3-16-148410-0
         author_id:
           type: string
           format: uuid
-          description: Mã định danh của tác giả (phải tồn tại trong hệ thống)
+          description: ID tác giả viết cuốn sách
           example: b1f8bc88-8d0a-3ef7-aa5c-5aa8bd270f22
         category_id:
           type: string
           format: uuid
-          description: Mã định danh của danh mục/thể loại sách
+          description: ID thể loại/danh mục sách
           example: f4c7bc55-5d0a-0ef4-772a-2ff5bd940c11
         category:
           type: string
-          description: Tên danh mục/thể loại sách
+          description: Tên thể loại/danh mục sách
           example: Công nghệ thông tin
         published_year:
           type: integer
@@ -1052,8 +936,8 @@ components:
           example: 2025
         quantity:
           type: integer
-          minimum: 0
-          description: Tổng số lượng sách nhập vào thư viện
+          minimum: 1
+          description: Tổng số lượng sách nhập kho
           example: 20
     BookDetailResponse:
       type: object
@@ -1063,51 +947,128 @@ components:
       properties:
         data:
           $ref: '#/components/schemas/Book'
-    BookUpdateRequest:
+    BookUpdateInput:
       type: object
-      description: |
-        Dữ liệu để cập nhật thông tin cuốn sách. Tất cả các trường đều là tùy chọn — chỉ những trường được gửi lên mới được cập nhật (partial update). Trường `updated_at` sẽ được hệ thống tự động cập nhật.
+      description: Thông tin cập nhật cho một cuốn sách (các trường không bắt buộc)
       properties:
         title:
           type: string
           maxLength: 255
           description: Tiêu đề cuốn sách
-          example: Thiết Kế Kiến Trúc Microservices - Ấn bản mới
+          example: Thiết Kế Kiến Trúc Microservices (Tái bản 2026)
         description:
           type: string
           maxLength: 2000
-          description: Mô tả ngắn gọn nội dung cuốn sách
-          example: Ấn bản cập nhật với các case study thực tế từ doanh nghiệp.
+          description: Mô tả nội dung cuốn sách
+          example: Cập nhật các mô hình kiến trúc hướng dịch vụ tiên tiến.
         isbn:
           type: string
           pattern: ^\d{3}-\d{1,5}-\d{1,7}-\d{1,7}-\d{1}$
-          description: Mã ISBN theo chuẩn ISBN-13
-          example: 978-3-16-148410-1
+          example: 978-3-16-148410-0
         author_id:
           type: string
           format: uuid
-          description: Mã định danh tác giả mới
           example: b1f8bc88-8d0a-3ef7-aa5c-5aa8bd270f22
         category_id:
           type: string
           format: uuid
-          description: Mã định danh danh mục mới
           example: f4c7bc55-5d0a-0ef4-772a-2ff5bd940c11
         category:
           type: string
-          description: Tên danh mục/thể loại sách mới
-          example: Khoa học máy tính
+          example: Công nghệ thông tin
         published_year:
           type: integer
           minimum: 1000
           maximum: 2100
-          description: Năm xuất bản
           example: 2026
         quantity:
           type: integer
           minimum: 0
-          description: Tổng số lượng sách (cập nhật khi nhập thêm hoặc thanh lý)
           example: 25
+        available_quantity:
+          type: integer
+          minimum: 0
+          example: 20
+    AuthorResponse:
+      type: object
+      description: Thông tin chi tiết của một tác giả
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Mã định danh duy nhất của tác giả (UUID v4)
+          example: b1f8bc88-8d0a-3ef7-aa5c-5aa8bd270f22
+        name:
+          type: string
+          maxLength: 100
+          description: Họ và tên của tác giả
+          example: Doãn Duy Lợi
+        email:
+          type: string
+          format: email
+          description: Email của tác giả
+          example: 24021549@vnu.edu.vn
+        bio:
+          type: string
+          description: Tiểu sử của tác giả
+          example: Nhà văn nổi tiếng.
+        birth_date:
+          type: string
+          format: date
+          description: Ngày sinh của tác giả
+          example: '2006-11-22'
+        created_at:
+          type: string
+          format: date-time
+          description: Thời điểm tạo bản ghi
+          example: '2025-11-20T10:00:00Z'
+        updated_at:
+          type: string
+          format: date-time
+          description: Thời điểm cập nhật lần cuối
+          example: '2026-06-20T14:00:00Z'
+    AuthorListResponse:
+      type: object
+      description: Phản hồi danh sách tác giả kèm thông tin phân trang
+      required:
+        - data
+        - pagination
+      properties:
+        data:
+          type: array
+          description: Danh sách tác giả phù hợp điều kiện truy vấn
+          items:
+            $ref: '#/components/schemas/AuthorResponse'
+        pagination:
+          $ref: '#/components/schemas/PaginationMeta'
+    AuthorRequest:
+      type: object
+      description: Dữ liệu gửi lên khi tạo mới hoặc cập nhật thông tin tác giả
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          maxLength: 100
+          description: Họ và tên của tác giả
+          example: Doãn Duy Lợi
+        email:
+          type: string
+          format: email
+          description: Email liên hệ của tác giả
+          example: 24021549@vnu.edu.vn
+        bio:
+          type: string
+          description: Tiểu sử ngắn gọn của tác giả
+          example: Nhà văn nổi tiếng.
+        birth_date:
+          type: string
+          format: date
+          description: Ngày sinh của tác giả
+          example: '2006-11-22'
     BorrowRecord:
       type: object
       required:
@@ -1310,6 +1271,16 @@ components:
             code: 500
             message: Lỗi hệ thống nội bộ, vui lòng thử lại sau
             timestamp: '2026-10-08T19:40:00Z'
+    NotFound:
+      description: Tài nguyên yêu cầu không tồn tại trên hệ thống.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: 404
+            message: Không tìm thấy dữ liệu yêu cầu
+            timestamp: '2026-10-08T19:40:00Z'
     Forbidden:
       description: Không có quyền truy cập vào tài nguyên này.
       content:
@@ -1319,6 +1290,16 @@ components:
           example:
             code: 403
             message: Bạn không có quyền thực hiện thao tác này
+            timestamp: '2026-10-08T19:40:00Z'
+    Conflict:
+      description: Xung đột dữ liệu, tài nguyên đã tồn tại hoặc trạng thái không cho phép thao tác.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: 409
+            message: Sách đã hết, không thể mượn
             timestamp: '2026-10-08T19:40:00Z'
     UnprocessableEntity:
       description: Dữ liệu đúng cú pháp nhưng không hợp lệ về mặt nghiệp vụ.
@@ -1333,26 +1314,6 @@ components:
             details:
               - field: published_year
                 issue: Năm xuất bản không được lớn hơn năm hiện tại
-    NotFound:
-      description: Tài nguyên yêu cầu không tồn tại trên hệ thống.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            code: 404
-            message: Không tìm thấy dữ liệu yêu cầu
-            timestamp: '2026-10-08T19:40:00Z'
-    Conflict:
-      description: Xung đột dữ liệu, tài nguyên đã tồn tại hoặc trạng thái không cho phép thao tác.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          example:
-            code: 409
-            message: Sách đã hết, không thể mượn
-            timestamp: '2026-10-08T19:40:00Z'
   securitySchemes:
     BearerAuth:
       type: http
