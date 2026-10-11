@@ -31,7 +31,7 @@ authors:
         content:
           application/json:
             schema:
-              $ref: "../components/schemas.yaml#/AuthorListResponse"
+              $ref: "../components/schemas/authors.yaml#/AuthorListResponse"
       "400":
         $ref: "../components/responses.yaml#/BadRequest"
       "500":
@@ -47,14 +47,14 @@ authors:
       content:
         application/json:
           schema:
-            $ref: "../components/schemas.yaml#/AuthorRequest"
+            $ref: "../components/schemas/authors.yaml#/AuthorRequest"
     responses:
       "201":
         description: Tạo tác giả thành công
         content:
           application/json:
             schema:
-              $ref: "../components/schemas.yaml#/AuthorResponse"
+              $ref: "../components/schemas/authors.yaml#/AuthorResponse"
       "400":
         $ref: "../components/responses.yaml#/BadRequest"
       "401":
@@ -84,7 +84,7 @@ author_by_id:
         content:
           application/json:
             schema:
-              $ref: "../components/schemas.yaml#/AuthorResponse"
+              $ref: "../components/schemas/authors.yaml#/AuthorResponse"
       "400":
         $ref: "../components/responses.yaml#/BadRequest"
       "401":
@@ -104,14 +104,14 @@ author_by_id:
       content:
         application/json:
           schema:
-            $ref: "../components/schemas.yaml#/AuthorRequest"
+            $ref: "../components/schemas/authors.yaml#/AuthorRequest"
     responses:
       "200":
         description: Cập nhật thành công
         content:
           application/json:
             schema:
-              $ref: "../components/schemas.yaml#/AuthorResponse"
+              $ref: "../components/schemas/authors.yaml#/AuthorResponse"
       "400":
         $ref: "../components/responses.yaml#/BadRequest"
       "401":

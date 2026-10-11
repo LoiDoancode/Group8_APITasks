@@ -1,0 +1,75 @@
+# Auth & User Module Schemas
+
+LoginRequest:
+  type: object
+  required:
+    - username
+    - password
+  properties:
+    username:
+      type: string
+      example: "admin"
+    password:
+      type: string
+      format: password
+      example: "password123"
+
+LoginResponse:
+  type: object
+  properties:
+    access_token:
+      type: string
+      description: Chuỗi JWT token để xác thực các request sau
+      example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM..."
+    token_type:
+      type: string
+      example: "Bearer"
+    expires_in:
+      type: integer
+      description: Thời gian sống của token (tính bằng giây)
+      example: 3600
+
+RegisterRequest:
+  type: object
+  required:
+    - username
+    - password
+    - email
+    - full_name
+  properties:
+    username:
+      type: string
+      example: "nguyenvanmuoi"
+    password:
+      type: string
+      format: password
+      example: "tenbanlagi"
+    email:
+      type: string
+      format: email
+      example: "muoinv@example.com"
+    full_name:
+      type: string
+      example: "Nguyễn Văn Mười"
+
+User:
+  type: object
+  properties:
+    id:
+      type: string
+      format: uuid
+      example: "e6f4a8b2-1b1c-4b1a-9f5b-1c5b8b9b8b9b"
+    username:
+      type: string
+      example: "nguyenvanmuoi"
+    email:
+      type: string
+      format: email
+      example: "muoinv@example.com"
+    full_name:
+      type: string
+      example: "Nguyễn Văn Mười"
+    role:
+      type: string
+      enum: [admin, user, librarian]
+      example: "user"

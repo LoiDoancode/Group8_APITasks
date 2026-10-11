@@ -10,7 +10,7 @@ login:
       content:
         application/json:
           schema:
-            $ref: "../components/schemas.yaml#/LoginRequest"
+            $ref: "../components/schemas/auth.yaml#/LoginRequest"
       description: Thông tin đăng nhập
     responses:
       "200":
@@ -18,7 +18,7 @@ login:
         content:
           application/json:
             schema:
-              $ref: "../components/schemas.yaml#/LoginResponse"
+              $ref: "../components/schemas/auth.yaml#/LoginResponse"
       "400":
         $ref: "../components/responses.yaml#/BadRequest"
       "401":
@@ -26,7 +26,7 @@ login:
         content:
           application/json:
             schema:
-              $ref: "../components/schemas.yaml#/ErrorResponse"
+              $ref: "../components/schemas/common.yaml#/ErrorResponse"
             example:
               code: 401
               message: "Sai tên đăng nhập hoặc mật khẩu"
@@ -44,14 +44,14 @@ register:
       content:
         application/json:
           schema:
-            $ref: "../components/schemas.yaml#/RegisterRequest"
+            $ref: "../components/schemas/auth.yaml#/RegisterRequest"
     responses:
       "201":
         description: Đăng ký thành công
         content:
           application/json:
             schema:
-              $ref: "../components/schemas.yaml#/User"
+              $ref: "../components/schemas/auth.yaml#/User"
       "400":
         $ref: "../components/responses.yaml#/BadRequest"
 
@@ -67,6 +67,6 @@ me:
         content:
           application/json:
             schema:
-              $ref: "../components/schemas.yaml#/User"
+              $ref: "../components/schemas/auth.yaml#/User"
       "401":
         $ref: "../components/responses.yaml#/Unauthorized"

@@ -3,7 +3,7 @@ BadRequest:
   content:
     application/json:
       schema:
-        $ref: "./schemas.yaml#/ErrorResponse"
+        $ref: "./schemas/common.yaml#/ErrorResponse"
       example:
         code: 400
         message: "Dữ liệu yêu cầu không hợp lệ"
@@ -17,7 +17,7 @@ Unauthorized:
   content:
     application/json:
       schema:
-        $ref: "./schemas.yaml#/ErrorResponse"
+        $ref: "./schemas/common.yaml#/ErrorResponse"
       example:
         code: 401
         message: "Access token không hợp lệ hoặc đã hết hạn"
@@ -28,7 +28,7 @@ Forbidden:
   content:
     application/json:
       schema:
-        $ref: "./schemas.yaml#/ErrorResponse"
+        $ref: "./schemas/common.yaml#/ErrorResponse"
       example:
         code: 403
         message: "Bạn không có quyền thực hiện thao tác này"
@@ -39,7 +39,7 @@ NotFound:
   content:
     application/json:
       schema:
-        $ref: "./schemas.yaml#/ErrorResponse"
+        $ref: "./schemas/common.yaml#/ErrorResponse"
       example:
         code: 404
         message: "Không tìm thấy dữ liệu yêu cầu"
@@ -50,7 +50,7 @@ Conflict:
   content:
     application/json:
       schema:
-        $ref: "./schemas.yaml#/ErrorResponse"
+        $ref: "./schemas/common.yaml#/ErrorResponse"
       example:
         code: 409
         message: "Sách đã hết, không thể mượn"
@@ -61,7 +61,7 @@ UnprocessableEntity:
   content:
     application/json:
       schema:
-        $ref: "./schemas.yaml#/ErrorResponse"
+        $ref: "./schemas/common.yaml#/ErrorResponse"
       example:
         code: 422
         message: "Dữ liệu không thể xử lý"
@@ -75,7 +75,7 @@ InternalServerError:
   content:
     application/json:
       schema:
-        $ref: "./schemas.yaml#/ErrorResponse"
+        $ref: "./schemas/common.yaml#/ErrorResponse"
       example:
         code: 500
         message: "Lỗi hệ thống nội bộ, vui lòng thử lại sau"

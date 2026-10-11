@@ -53,9 +53,72 @@ paths:
 
 components:
   schemas:
-    $ref: "./components/schemas.yaml"
+    # 1. Error & Common Schemas
+    ErrorDetail:
+      $ref: "./components/schemas/common.yaml#/ErrorDetail"
+    ErrorResponse:
+      $ref: "./components/schemas/common.yaml#/ErrorResponse"
+    PaginationMeta:
+      $ref: "./components/schemas/common.yaml#/PaginationMeta"
+
+    # 2. Books Module Schemas
+    Book:
+      $ref: "./components/schemas/books.yaml#/Book"
+    BookListResponse:
+      $ref: "./components/schemas/books.yaml#/BookListResponse"
+    BookDetailResponse:
+      $ref: "./components/schemas/books.yaml#/BookDetailResponse"
+    BookCreateInput:
+      $ref: "./components/schemas/books.yaml#/BookCreateInput"
+    BookUpdateInput:
+      $ref: "./components/schemas/books.yaml#/BookUpdateInput"
+
+    # 3. Authors Module Schemas
+    Author:
+      $ref: "./components/schemas/authors.yaml#/Author"
+    AuthorRequest:
+      $ref: "./components/schemas/authors.yaml#/AuthorRequest"
+    AuthorResponse:
+      $ref: "./components/schemas/authors.yaml#/AuthorResponse"
+    AuthorListResponse:
+      $ref: "./components/schemas/authors.yaml#/AuthorListResponse"
+
+    # 4. Borrows Module Schemas
+    BorrowRecord:
+      $ref: "./components/schemas/borrows.yaml#/BorrowRecord"
+    BorrowCreateRequest:
+      $ref: "./components/schemas/borrows.yaml#/BorrowCreateRequest"
+    BorrowUpdateRequest:
+      $ref: "./components/schemas/borrows.yaml#/BorrowUpdateRequest"
+    BorrowListResponse:
+      $ref: "./components/schemas/borrows.yaml#/BorrowListResponse"
+
+    # 5. Auth & User Module Schemas
+    LoginRequest:
+      $ref: "./components/schemas/auth.yaml#/LoginRequest"
+    LoginResponse:
+      $ref: "./components/schemas/auth.yaml#/LoginResponse"
+    RegisterRequest:
+      $ref: "./components/schemas/auth.yaml#/RegisterRequest"
+    User:
+      $ref: "./components/schemas/auth.yaml#/User"
+
   responses:
-    $ref: "./components/responses.yaml"
+    BadRequest:
+      $ref: "./components/responses.yaml#/BadRequest"
+    Unauthorized:
+      $ref: "./components/responses.yaml#/Unauthorized"
+    Forbidden:
+      $ref: "./components/responses.yaml#/Forbidden"
+    NotFound:
+      $ref: "./components/responses.yaml#/NotFound"
+    Conflict:
+      $ref: "./components/responses.yaml#/Conflict"
+    UnprocessableEntity:
+      $ref: "./components/responses.yaml#/UnprocessableEntity"
+    InternalServerError:
+      $ref: "./components/responses.yaml#/InternalServerError"
+
   securitySchemes:
     BearerAuth:
       type: http

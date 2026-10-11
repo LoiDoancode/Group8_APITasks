@@ -1,3 +1,4 @@
+#Error
 ErrorDetail:
   type: object
   description: Chi tiết lỗi phát sinh theo từng trường dữ liệu
@@ -71,6 +72,7 @@ PaginationMeta:
       description: Tổng số trang (total_items / limit)
       example: 15
 
+#Books
 Book:
   type: object
   description: >
@@ -263,6 +265,7 @@ BookUpdateInput:
       minimum: 0
       example: 20
 
+#Authors
 Author:
   type: object
   required:
@@ -372,6 +375,7 @@ AuthorListResponse:
     pagination:
       $ref: "#/PaginationMeta"
 
+#Borrows
 BorrowRecord:
   type: object
   required:
@@ -512,6 +516,7 @@ BorrowListResponse:
     pagination:
       $ref: "#/PaginationMeta"
 
+#Auth
 LoginRequest:
   type: object
   required:

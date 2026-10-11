@@ -69,7 +69,7 @@ books:
         content:
           application/json:
             schema:
-              $ref: "../components/schemas.yaml#/BookListResponse"
+              $ref: "../components/schemas/books.yaml#/BookListResponse"
             examples:
               success_with_data:
                 summary: Có kết quả trả về
@@ -121,7 +121,7 @@ books:
         content:
           application/json:
             schema:
-              $ref: "../components/schemas.yaml#/ErrorResponse"
+              $ref: "../components/schemas/common.yaml#/ErrorResponse"
             example:
               code: 400
               message: "Tham số truy vấn không hợp lệ"
@@ -148,14 +148,14 @@ books:
       content:
         application/json:
           schema:
-            $ref: "../components/schemas.yaml#/BookCreateInput"
+            $ref: "../components/schemas/books.yaml#/BookCreateInput"
     responses:
       "201":
         description: Thêm sách thành công — Trả về thông tin chi tiết cuốn sách vừa tạo.
         content:
           application/json:
             schema:
-              $ref: "../components/schemas.yaml#/BookDetailResponse"
+              $ref: "../components/schemas/books.yaml#/BookDetailResponse"
       "400":
         $ref: "../components/responses.yaml#/BadRequest"
       "401":
@@ -189,7 +189,7 @@ book_by_id:
         content:
           application/json:
             schema:
-              $ref: "../components/schemas.yaml#/BookDetailResponse"
+              $ref: "../components/schemas/books.yaml#/BookDetailResponse"
             example:
               data:
                 id: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
@@ -211,7 +211,7 @@ book_by_id:
         content:
           application/json:
             schema:
-              $ref: "../components/schemas.yaml#/ErrorResponse"
+              $ref: "../components/schemas/common.yaml#/ErrorResponse"
             example:
               code: 400
               message: "Tham số id không hợp lệ"
@@ -228,7 +228,7 @@ book_by_id:
         content:
           application/json:
             schema:
-              $ref: "../components/schemas.yaml#/ErrorResponse"
+              $ref: "../components/schemas/common.yaml#/ErrorResponse"
             example:
               code: 404
               message: "Không tìm thấy sách với id đã cung cấp"
@@ -258,14 +258,14 @@ book_by_id:
       content:
         application/json:
           schema:
-            $ref: "../components/schemas.yaml#/BookUpdateInput"
+            $ref: "../components/schemas/books.yaml#/BookUpdateInput"
     responses:
       "200":
         description: Cập nhật sách thành công — Trả về thông tin chi tiết mới nhất của cuốn sách.
         content:
           application/json:
             schema:
-              $ref: "../components/schemas.yaml#/BookDetailResponse"
+              $ref: "../components/schemas/books.yaml#/BookDetailResponse"
       "400":
         $ref: "../components/responses.yaml#/BadRequest"
       "401":

@@ -42,7 +42,7 @@ borrows:
         content:
           application/json:
             schema:
-              $ref: "../components/schemas.yaml#/BorrowListResponse"
+              $ref: "../components/schemas/borrows.yaml#/BorrowListResponse"
       "401":
         $ref: "../components/responses.yaml#/Unauthorized"
       "500":
@@ -58,14 +58,14 @@ borrows:
       content:
         application/json:
           schema:
-            $ref: "../components/schemas.yaml#/BorrowCreateRequest"
+            $ref: "../components/schemas/borrows.yaml#/BorrowCreateRequest"
     responses:
       "201":
         description: Tạo phiếu mượn thành công
         content:
           application/json:
             schema:
-              $ref: "../components/schemas.yaml#/BorrowRecord"
+              $ref: "../components/schemas/borrows.yaml#/BorrowRecord"
       "400":
         $ref: "../components/responses.yaml#/BadRequest"
       "401":
@@ -99,7 +99,7 @@ borrow_by_id:
         content:
           application/json:
             schema:
-              $ref: "../components/schemas.yaml#/BorrowRecord"
+              $ref: "../components/schemas/borrows.yaml#/BorrowRecord"
       "401":
         $ref: "../components/responses.yaml#/Unauthorized"
       "404":
@@ -117,14 +117,14 @@ borrow_by_id:
       content:
         application/json:
           schema:
-            $ref: "../components/schemas.yaml#/BorrowUpdateRequest"
+            $ref: "../components/schemas/borrows.yaml#/BorrowUpdateRequest"
     responses:
       "200":
         description: Cập nhật phiếu mượn thành công
         content:
           application/json:
             schema:
-              $ref: "../components/schemas.yaml#/BorrowRecord"
+              $ref: "../components/schemas/borrows.yaml#/BorrowRecord"
       "400":
         $ref: "../components/responses.yaml#/BadRequest"
       "401":

@@ -1,0 +1,193 @@
+# Book Module Schemas
+
+Book:
+  type: object
+  description: >
+    Thực thể đại diện cho một cuốn sách trong hệ thống thư viện.
+    Chứa đầy đủ thông tin mô tả, phân loại, số lượng và trạng thái sẵn có.
+  required:
+    - id
+    - title
+    - author_id
+    - category_id
+    - category
+    - quantity
+  properties:
+    id:
+      type: string
+      format: uuid
+      description: Mã định danh duy nhất của cuốn sách (UUID v4)
+      example: "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"
+    title:
+      type: string
+      maxLength: 255
+      description: Tiêu đề cuốn sách
+      example: "Thiết Kế Kiến Trúc Microservices"
+    description:
+      type: string
+      maxLength: 2000
+      description: Mô tả ngắn gọn nội dung cuốn sách
+      example: "Cuốn sách hướng dẫn toàn diện về thiết kế và triển khai kiến trúc Microservices trong các hệ thống phân tán hiện đại."
+    isbn:
+      type: string
+      pattern: '^\d{3}-\d{1,5}-\d{1,7}-\d{1,7}-\d{1}$'
+      description: Mã ISBN (International Standard Book Number) theo chuẩn ISBN-13
+      example: "978-3-16-148410-0"
+    author_id:
+      type: string
+      format: uuid
+      description: Mã định danh của tác giả (liên kết đến Author)
+      example: "b1f8bc88-8d0a-3ef7-aa5c-5aa8bd270f22"
+    category_id:
+      type: string
+      format: uuid
+      description: Mã định danh của danh mục/thể loại sách (dùng để lọc)
+      example: "f4c7bc55-5d0a-0ef4-772a-2ff5bd940c11"
+    category:
+      type: string
+      description: Tên danh mục/thể loại sách (hiển thị)
+      example: "Công nghệ thông tin"
+    published_year:
+      type: integer
+      minimum: 1000
+      maximum: 2100
+      description: Năm xuất bản
+      example: 2025
+    quantity:
+      type: integer
+      minimum: 0
+      description: Tổng số lượng sách trong thư viện
+      example: 20
+    available_quantity:
+      type: integer
+      minimum: 0
+      description: Số lượng sách hiện có sẵn để mượn
+      example: 15
+    created_at:
+      type: string
+      format: date-time
+      description: Thời điểm bản ghi được tạo
+      example: "2026-01-15T08:30:00Z"
+    updated_at:
+      type: string
+      format: date-time
+      description: Thời điểm bản ghi được cập nhật lần cuối
+      example: "2026-06-20T14:00:00Z"
+
+BookListResponse:
+  type: object
+  description: Phản hồi danh sách sách kèm thông tin phân trang
+  required:
+    - data
+    - pagination
+  properties:
+    data:
+      type: array
+      description: Danh sách các cuốn sách phù hợp với điều kiện truy vấn
+      items:
+        $ref: "#/Book"
+    pagination:
+      $ref: "./common.yaml#/PaginationMeta"
+
+BookDetailResponse:
+  type: object
+  description: Phản hồi chi tiết một cuốn sách
+  required:
+    - data
+  properties:
+    data:
+      $ref: "#/Book"
+
+BookCreateInput:
+  type: object
+  description: Thông tin yêu cầu khi thêm mới một cuốn sách vào thư viện
+  required:
+    - title
+    - author_id
+    - category_id
+    - category
+    - quantity
+  properties:
+    title:
+      type: string
+      maxLength: 255
+      description: Tiêu đề cuốn sách
+      example: "Thiết Kế Kiến Trúc Microservices"
+    description:
+      type: string
+      maxLength: 2000
+      description: Mô tả nội dung cuốn sách
+      example: "Cuốn sách hướng dẫn toàn diện về thiết kế và triển khai kiến trúc Microservices trong các hệ thống phân tán hiện đại."
+    isbn:
+      type: string
+      pattern: '^\d{3}-\d{1,5}-\d{1,7}-\d{1,7}-\d{1}$'
+      description: Mã ISBN-13
+      example: "978-3-16-148410-0"
+    author_id:
+      type: string
+      format: uuid
+      description: ID tác giả viết cuốn sách
+      example: "b1f8bc88-8d0a-3ef7-aa5c-5aa8bd270f22"
+    category_id:
+      type: string
+      format: uuid
+      description: ID thể loại/danh mục sách
+      example: "f4c7bc55-5d0a-0ef4-772a-2ff5bd940c11"
+    category:
+      type: string
+      description: Tên thể loại/danh mục sách
+      example: "Công nghệ thông tin"
+    published_year:
+      type: integer
+      minimum: 1000
+      maximum: 2100
+      description: Năm xuất bản
+      example: 2025
+    quantity:
+      type: integer
+      minimum: 1
+      description: Tổng số lượng sách nhập kho
+      example: 20
+
+BookUpdateInput:
+  type: object
+  description: Thông tin cập nhật cho một cuốn sách (các trường không bắt buộc)
+  properties:
+    title:
+      type: string
+      maxLength: 255
+      description: Tiêu đề cuốn sách
+      example: "Thiết Kế Kiến Trúc Microservices (Tái bản 2026)"
+    description:
+      type: string
+      maxLength: 2000
+      description: Mô tả nội dung cuốn sách
+      example: "Cập nhật các mô hình kiến trúc hướng dịch vụ tiên tiến."
+    isbn:
+      type: string
+      pattern: '^\d{3}-\d{1,5}-\d{1,7}-\d{1,7}-\d{1}$'
+      example: "978-3-16-148410-0"
+    author_id:
+      type: string
+      format: uuid
+      example: "b1f8bc88-8d0a-3ef7-aa5c-5aa8bd270f22"
+    category_id:
+      type: string
+      format: uuid
+      example: "f4c7bc55-5d0a-0ef4-772a-2ff5bd940c11"
+    category:
+      type: string
+      example: "Công nghệ thông tin"
+    published_year:
+      type: integer
+      minimum: 1000
+      maximum: 2100
+      example: 2026
+    quantity:
+      type: integer
+      minimum: 0
+      example: 25
+    available_quantity:
+      type: integer
+      minimum: 0
+      example: 20

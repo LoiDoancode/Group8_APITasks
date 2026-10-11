@@ -19,11 +19,22 @@ def get_openapi_json():
     with open(yaml_path, 'r', encoding='utf-8') as f:
         spec = yaml.safe_load(f)
     
-    # Nạp trực tiếp schemas.yaml vào components.schemas
-    schemas_file = os.path.join(BASE_DIR, 'components', 'schemas.yaml')
-    if os.path.exists(schemas_file):
-        with open(schemas_file, 'r', encoding='utf-8') as f:
-            spec.setdefault('components', {})['schemas'] = yaml.safe_load(f)
+    # Nạp components.schemas từ thư mục components/schemas/ hoặc file schemas.yaml
+    schemas_dir = os.path.join(BASE_DIR, 'components', 'schemas')
+    if os.path.exists(schemas_dir) and os.path.isdir(schemas_dir):
+        all_schemas = {}
+        for sname in sorted(os.listdir(schemas_dir)):
+            if sname.endswith(('.yaml', '.yml')):
+                with open(os.path.join(schemas_dir, sname), 'r', encoding='utf-8') as f:
+                    data = yaml.safe_load(f)
+                    if isinstance(data, dict):
+                        all_schemas.update(data)
+        spec.setdefault('components', {})['schemas'] = all_schemas
+    else:
+        schemas_file = os.path.join(BASE_DIR, 'components', 'schemas.yaml')
+        if os.path.exists(schemas_file):
+            with open(schemas_file, 'r', encoding='utf-8') as f:
+                spec.setdefault('components', {})['schemas'] = yaml.safe_load(f)
 
     # Nạp trực tiếp responses.yaml vào components.responses
     responses_file = os.path.join(BASE_DIR, 'components', 'responses.yaml')
