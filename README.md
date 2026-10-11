@@ -11,9 +11,9 @@
 | STT | Họ và tên | Mã sinh viên | Vai trò |
 | :-: | :-- | :-- | :-- |
 | 1 | Doãn Duy Lợi | 24021549 | Team Leader, Root Spec, Auth APIs |
-| 2 | Nguyễn Phúc Thành | | Module Quản lý Sách |
-| 3 | Nguyễn Xuân Tường | | Module Quản lý Tác giả |
-| 4 | Hoàng Lâm Tùng | | Module Mượn/Trả sách |
+| 2 | Nguyễn Phúc Thành | 24021629 | Module Quản lý Sách |
+| 3 | Nguyễn Xuân Tường | 24021669 | Module Quản lý Tác giả |
+| 4 | Hoàng Lâm Tùng | 24021661 | Module Mượn/Trả sách |
 | 5 | An Đức Minh Trí | 24021645 | Common Schemas, README |
 
 ---
